@@ -1,0 +1,28 @@
+modLoader="javafml"
+
+loaderVersion="[28,)"
+
+issueTrackerURL="https://github.com/Otamusan/NotEnoughCompression"
+
+[[mods]]
+	modId="notenoughcompression"
+
+	version="1.00"
+
+	displayName="Not Enough Compression"
+
+	description='''
+	assyuku!
+	'''
+
+[[dependencies.notenoughcompression]]
+    modId="forge"
+
+    mandatory=true
+
+    versionRange="[28,)"
+
+    ordering="NONE"
+
+    side="BOTH"
+

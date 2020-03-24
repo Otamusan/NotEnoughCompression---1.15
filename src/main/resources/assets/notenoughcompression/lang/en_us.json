@@ -1,0 +1,6 @@
+{
+    "item.notenoughcompression.itemcompressed":  "Compressed",
+    "notenoughcompression.compressed": "%sx Compressed %s",
+	"notenoughcompression.compresseditem":"Compressed Items : %s",
+	"notenoughcompression.total":"Total : %s"
+}

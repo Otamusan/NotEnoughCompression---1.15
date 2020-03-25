@@ -1,20 +1,16 @@
 package otamusan.nec.block.tileentity.compressedfurnace;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.IRecipeHelperPopulator;
-import net.minecraft.inventory.IRecipeHolder;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.container.Container;
@@ -25,7 +21,6 @@ import net.minecraft.item.Items;
 import net.minecraft.item.crafting.AbstractCookingRecipe;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.RecipeItemHelper;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -43,7 +38,7 @@ import otamusan.nec.register.BlockRegister;
 
 //FurnaceTileEntity
 public class TileCompressedFurnace extends TileCompressedBlock
-		implements ISidedInventory, IRecipeHolder, IRecipeHelperPopulator, ITickableTileEntity,
+		implements ISidedInventory, ITickableTileEntity,
 		INamedContainerProvider {
 	public TileCompressedFurnace() {
 	}
@@ -294,11 +289,6 @@ public class TileCompressedFurnace extends TileCompressedBlock
 			} else if (NECRecipe.areItemStacksEqual(recipeResult, smelted)) {
 				smelted.grow(recipeResult.getCount());
 			}
-
-			if (!this.world.isRemote) {
-				this.setRecipeUsed(p_214007_1_);
-			}
-
 			material.shrink(1);
 		}
 	}
@@ -307,8 +297,7 @@ public class TileCompressedFurnace extends TileCompressedBlock
 		if (p_213997_1_.isEmpty()) {
 			return 0;
 		} else {
-			Item item = p_213997_1_.getItem();
-			return net.minecraftforge.common.ForgeHooks.getBurnTime(p_213997_1_);
+			return net.minecraftforge.common.ForgeHooks.getBurnTime(ItemCompressed.getOriginal(p_213997_1_));
 		}
 	}
 
@@ -319,7 +308,7 @@ public class TileCompressedFurnace extends TileCompressedBlock
 	}
 
 	public boolean isFuel(ItemStack p_213991_0_) {
-		return net.minecraftforge.common.ForgeHooks.getBurnTime(p_213991_0_) > 0
+		return net.minecraftforge.common.ForgeHooks.getBurnTime(ItemCompressed.getOriginal(p_213991_0_)) > 0
 				&& ItemCompressed.getTime(p_213991_0_) == getTime();
 	}
 
@@ -422,28 +411,7 @@ public class TileCompressedFurnace extends TileCompressedBlock
 		this.items.clear();
 	}
 
-	public void setRecipeUsed(@Nullable IRecipe<?> recipe) {
-		if (recipe != null) {
-			this.field_214022_n.compute(recipe.getId(), (p_214004_0_, p_214004_1_) -> {
-				return 1 + (p_214004_1_ == null ? 0 : p_214004_1_);
-			});
-		}
-
-	}
-
-	@Nullable
-	public IRecipe<?> getRecipeUsed() {
-		return null;
-	}
-
 	public void onCrafting(PlayerEntity player) {
-	}
-
-	public void fillStackedContents(RecipeItemHelper helper) {
-		for (ItemStack itemstack : this.items) {
-			helper.accountStack(itemstack);
-		}
-
 	}
 
 	net.minecraftforge.common.util.LazyOptional<? extends net.minecraftforge.items.IItemHandler>[] handlers = net.minecraftforge.items.wrapper.SidedInvWrapper
@@ -481,20 +449,6 @@ public class TileCompressedFurnace extends TileCompressedBlock
 		return new CompressedFurnaceContainer(BlockRegister.CONTAINERTYPE_FURNACE, recipeType, p_createMenu_1_,
 				p_createMenu_2_, this,
 				this.furnaceData);
-	}
-
-	public void func_213995_d(PlayerEntity p_213995_1_) {
-		List<IRecipe<?>> list = Lists.newArrayList();
-
-		for (Entry<ResourceLocation, Integer> entry : this.field_214022_n.entrySet()) {
-			p_213995_1_.world.getRecipeManager().getRecipe(entry.getKey()).ifPresent((p_213993_3_) -> {
-				list.add(p_213993_3_);
-				func_214003_a(p_213995_1_, entry.getValue(), ((AbstractCookingRecipe) p_213993_3_).getExperience());
-			});
-		}
-
-		p_213995_1_.unlockRecipes(list);
-		this.field_214022_n.clear();
 	}
 
 	private static void func_214003_a(PlayerEntity p_214003_0_, int p_214003_1_, float p_214003_2_) {

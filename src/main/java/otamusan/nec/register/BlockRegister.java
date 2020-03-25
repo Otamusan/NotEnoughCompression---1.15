@@ -40,7 +40,7 @@ public class BlockRegister {
 				.setRegistryName(Lib.BLOCK_COMPRESSED);
 		BLOCK_COMPRESSEDFURNACE = (BlockCompressed) new BlockCompressedFurnace()
 				.setRegistryName(Lib.BLOCK_COMPRESSEDFURNACE);
-		//BLOCK_COMPRESSED.addChildren(BLOCK_COMPRESSEDFURNACE);
+		BLOCK_COMPRESSED.addChildren(BLOCK_COMPRESSEDFURNACE);
 		blockRegistryEvent.getRegistry().registerAll(BLOCK_COMPRESSED, BLOCK_COMPRESSEDFURNACE);
 	}
 

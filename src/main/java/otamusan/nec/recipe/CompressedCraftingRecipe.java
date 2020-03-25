@@ -10,6 +10,7 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import otamusan.nec.config.ConfigCommon;
 import otamusan.nec.item.ItemCompressed;
 import otamusan.nec.register.ItemRegister;
 
@@ -24,6 +25,9 @@ public class CompressedCraftingRecipe extends NECRecipe {
 	@Override
 	public boolean matches(CraftingInventory inv, World worldIn) {
 		world = worldIn;
+
+		if (ConfigCommon.CONFIG_COMMON.isReplaceVanillaRecipe.get())
+			return false;
 
 		int time = 0;
 		for (ItemStack stack : getIterator(inv)) {

@@ -6,7 +6,6 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import otamusan.nec.common.Lib;
-import otamusan.nec.config.ConfigCommon;
 import otamusan.nec.recipe.CompressedCraftingRecipe;
 import otamusan.nec.recipe.CompressionRecipe;
 import otamusan.nec.recipe.DecompressionRecipe;
@@ -29,16 +28,17 @@ public class RecipeRegister {
 		e.getRegistry().register(new SpecialRecipeSerializer<>(DecompressionRecipe::new)
 				.setRegistryName(Lib.RECIPE_DECOMPRESSION));
 
-		if (ConfigCommon.CONFIG_COMMON.isReplaceVanillaRecipe.get()) {
-			replacedShapeless.setRegistryName(ReplacedShapelessRecipe.Serializer.NAME);
-			replacedShaped.setRegistryName(ReplacedShapedRecipe.Serializer.NAME);
+		//if (ConfigCommon.CONFIG_COMMON.isReplaceVanillaRecipe.get()) {
 
-			e.getRegistry().register(replacedShapeless);
-			e.getRegistry().register(replacedShaped);
-		} else {
-			e.getRegistry().register(new SpecialRecipeSerializer<>(CompressedCraftingRecipe::new)
-					.setRegistryName(Lib.RECIPE_COMPRESSEDCRAFTING));
-		}
+		replacedShapeless.setRegistryName(ReplacedShapelessRecipe.Serializer.NAME);
+		replacedShaped.setRegistryName(ReplacedShapedRecipe.Serializer.NAME);
+
+		e.getRegistry().register(replacedShapeless);
+		e.getRegistry().register(replacedShaped);
+		//} else {
+		e.getRegistry().register(new SpecialRecipeSerializer<>(CompressedCraftingRecipe::new)
+				.setRegistryName(Lib.RECIPE_COMPRESSEDCRAFTING));
+		//}
 
 		/*e.getRegistry().register(new SpecialRecipeSerializer<>(CompressedSmeltingRecipe.Smelting::new)
 				.setRegistryName(Lib.RECIPE_COMPRESSEDSMELTING));

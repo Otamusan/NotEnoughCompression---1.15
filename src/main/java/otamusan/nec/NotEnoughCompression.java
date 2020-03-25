@@ -13,6 +13,8 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import otamusan.nec.common.AutoCompression;
+import otamusan.nec.common.GiveItems;
 import otamusan.nec.common.Lib;
 import otamusan.nec.config.ConfigClient;
 import otamusan.nec.config.ConfigCommon;
@@ -39,8 +41,8 @@ public class NotEnoughCompression {
 	}
 
 	private void enqueueIMC(final InterModEnqueueEvent event) {
-		//MinecraftForge.EVENT_BUS.register(AutoCompression.class);
-		//MinecraftForge.EVENT_BUS.register(GiveItems.class);
+		MinecraftForge.EVENT_BUS.register(AutoCompression.class);
+		MinecraftForge.EVENT_BUS.register(GiveItems.class);
 	}
 
 	private void processIMC(final InterModProcessEvent event) {

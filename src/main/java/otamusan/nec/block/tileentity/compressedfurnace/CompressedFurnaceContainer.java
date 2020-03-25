@@ -5,7 +5,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.IRecipeHelperPopulator;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.AbstractFurnaceContainer;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -18,8 +18,9 @@ import net.minecraft.util.IntArray;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import otamusan.nec.item.ItemCompressed;
 
-public class CompressedFurnaceContainer extends AbstractFurnaceContainer {
+public class CompressedFurnaceContainer extends Container {
 	private final IInventory furnaceInventory;
 	private final IIntArray field_217064_e;
 	protected final World world;
@@ -89,10 +90,6 @@ public class CompressedFurnaceContainer extends AbstractFurnaceContainer {
 
 		protected void onCrafting(ItemStack stack) {
 			stack.onCrafting(this.player.world, this.player, this.removeCount);
-			if (!this.player.world.isRemote && this.inventory instanceof TileCompressedFurnace) {
-				((TileCompressedFurnace) this.inventory).func_213995_d(this.player);
-			}
-
 			this.removeCount = 0;
 			net.minecraftforge.fml.hooks.BasicEventHooks.firePlayerSmeltedEvent(this.player, stack);
 		}
@@ -102,7 +99,7 @@ public class CompressedFurnaceContainer extends AbstractFurnaceContainer {
 	protected CompressedFurnaceContainer(ContainerType<?> containerTypeIn,
 			IRecipeType<? extends AbstractCookingRecipe> recipeTypeIn, int id, PlayerInventory playerInventoryIn,
 			IInventory furnaceInventoryIn, IIntArray p_i50104_6_) {
-		super(containerTypeIn, recipeTypeIn, id, playerInventoryIn);
+		super(containerTypeIn, id);
 		this.recipeType = recipeTypeIn;
 		assertInventorySize(furnaceInventoryIn, 3);
 		assertIntArraySize(p_i50104_6_, 4);
@@ -212,7 +209,9 @@ public class CompressedFurnaceContainer extends AbstractFurnaceContainer {
 
 	protected boolean func_217057_a(ItemStack p_217057_1_) {
 		return this.world.getRecipeManager()
-				.getRecipe((IRecipeType) this.recipeType, new Inventory(p_217057_1_), this.world).isPresent();
+				.getRecipe((IRecipeType) this.recipeType, new Inventory(ItemCompressed.getOriginal(p_217057_1_)),
+						this.world)
+				.isPresent();
 	}
 
 	protected boolean isFuel(ItemStack p_217058_1_) {

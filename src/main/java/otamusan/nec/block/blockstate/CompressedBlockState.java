@@ -60,6 +60,7 @@ import otamusan.nec.block.BlockCompressed;
 import otamusan.nec.block.tileentity.TileCompressedBlock;
 import otamusan.nec.item.ItemCompressed;
 
+//
 public class CompressedBlockState extends BlockState {
 	@Nullable
 	private CompressedBlockState.Cache cache;

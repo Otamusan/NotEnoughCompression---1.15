@@ -12,14 +12,17 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.RecipeItemHelper;
 import net.minecraft.item.crafting.ShapedRecipe;
+import net.minecraft.item.crafting.ShapelessRecipe;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import otamusan.nec.config.ConfigCommon;
 import otamusan.nec.item.ItemCompressed;
+import otamusan.nec.register.RecipeRegister;
 
-public class ReplacedShapelessRecipe implements ICraftingRecipe {
+public class ReplacedShapelessRecipe extends ShapelessRecipe implements ICraftingRecipe {
 	private final ResourceLocation id;
 	private final String group;
 	private final ItemStack recipeOutput;
@@ -28,6 +31,7 @@ public class ReplacedShapelessRecipe implements ICraftingRecipe {
 
 	public ReplacedShapelessRecipe(ResourceLocation idIn, String groupIn, ItemStack recipeOutputIn,
 			NonNullList<Ingredient> recipeItemsIn) {
+		super(idIn, groupIn, recipeOutputIn, recipeItemsIn);
 		this.id = idIn;
 		this.group = groupIn;
 		this.recipeOutput = recipeOutputIn;
@@ -40,7 +44,7 @@ public class ReplacedShapelessRecipe implements ICraftingRecipe {
 	}
 
 	public IRecipeSerializer<?> getSerializer() {
-		return IRecipeSerializer.CRAFTING_SHAPELESS;
+		return RecipeRegister.replacedShapeless;
 	}
 
 	/**
@@ -132,10 +136,10 @@ public class ReplacedShapelessRecipe implements ICraftingRecipe {
 	}
 
 	public static class Serializer extends net.minecraftforge.registries.ForgeRegistryEntry<IRecipeSerializer<?>>
-			implements IRecipeSerializer<ReplacedShapelessRecipe> {
+			implements IRecipeSerializer<ShapelessRecipe> {
 		public static final ResourceLocation NAME = new ResourceLocation("minecraft", "crafting_shapeless");
 
-		public ReplacedShapelessRecipe read(ResourceLocation recipeId, JsonObject json) {
+		public ShapelessRecipe read(ResourceLocation recipeId, JsonObject json) {
 			String s = JSONUtils.getString(json, "group", "");
 			NonNullList<Ingredient> nonnulllist = readIngredients(JSONUtils.getJsonArray(json, "ingredients"));
 			if (nonnulllist.isEmpty()) {
@@ -145,8 +149,10 @@ public class ReplacedShapelessRecipe implements ICraftingRecipe {
 						+ (ReplacedShapedRecipe.MAX_WIDTH * ReplacedShapedRecipe.MAX_HEIGHT));
 			} else {
 				ItemStack itemstack = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, "result"));
-				return new ReplacedShapelessRecipe(recipeId, s, itemstack, nonnulllist);
-				//return new ReplacedShapelessRecipe(recipeId, s, new ItemStack(Blocks.STONE), nonnulllist);
+				if (ConfigCommon.CONFIG_COMMON.isReplaceVanillaRecipe.get()) {
+					return new ReplacedShapelessRecipe(recipeId, s, itemstack, nonnulllist);
+				}
+				return new ShapelessRecipe(recipeId, s, itemstack, nonnulllist);
 
 			}
 		}
@@ -164,7 +170,7 @@ public class ReplacedShapelessRecipe implements ICraftingRecipe {
 			return nonnulllist;
 		}
 
-		public ReplacedShapelessRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
+		public ShapelessRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
 			String s = buffer.readString(32767);
 			int i = buffer.readVarInt();
 			NonNullList<Ingredient> nonnulllist = NonNullList.withSize(i, Ingredient.EMPTY);
@@ -174,20 +180,17 @@ public class ReplacedShapelessRecipe implements ICraftingRecipe {
 			}
 
 			ItemStack itemstack = buffer.readItemStack();
-			return new ReplacedShapelessRecipe(recipeId, s, itemstack, nonnulllist);
+			if (ConfigCommon.CONFIG_COMMON.isReplaceVanillaRecipe.get()) {
+				return new ReplacedShapelessRecipe(recipeId, s, itemstack, nonnulllist);
+			} else {
+				return new ShapelessRecipe(recipeId, s, itemstack, nonnulllist);
+			}
 			//return new ReplacedShapelessRecipe(recipeId, s, new ItemStack(Blocks.STONE), nonnulllist);
 
 		}
 
-		public void write(PacketBuffer buffer, ReplacedShapelessRecipe recipe) {
-			buffer.writeString(recipe.group);
-			buffer.writeVarInt(recipe.recipeItems.size());
-
-			for (Ingredient ingredient : recipe.recipeItems) {
-				ingredient.write(buffer);
-			}
-
-			buffer.writeItemStack(recipe.recipeOutput);
+		public void write(PacketBuffer buffer, ShapelessRecipe recipe) {
+			IRecipeSerializer.CRAFTING_SHAPELESS.write(buffer, recipe);
 		}
 	}
 }

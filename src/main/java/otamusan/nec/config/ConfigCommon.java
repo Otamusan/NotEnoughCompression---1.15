@@ -58,6 +58,7 @@ public class ConfigCommon {
 				.comment("If true, all crafts can only be done with compressed items",
 						"In other words, the amount of material per craft is increased eight times")
 				.define("isReplaceVanillaRecipe", false);
+
 		builder.pop();
 
 		builder.push("World");
@@ -113,11 +114,12 @@ public class ConfigCommon {
 	}
 
 	@SubscribeEvent
-	public static void onFileChange(final Reloading configEvent) {
-	}
-
-	@SubscribeEvent
 	public static void onModConfigEvent(final ModConfig.ModConfigEvent event) {
 
 	}
+
+	@SubscribeEvent
+	public static void onFileChange(final Reloading configEvent) {
+	}
+
 }

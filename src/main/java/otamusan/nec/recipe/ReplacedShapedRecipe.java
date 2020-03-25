@@ -19,15 +19,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import otamusan.nec.config.ConfigCommon;
 import otamusan.nec.item.ItemCompressed;
+import otamusan.nec.register.RecipeRegister;
 
-public class ReplacedShapedRecipe
+public class ReplacedShapedRecipe extends ShapedRecipe
 		implements ICraftingRecipe, net.minecraftforge.common.crafting.IShapedRecipe<CraftingInventory> {
 	static int MAX_WIDTH = 3;
 	static int MAX_HEIGHT = 3;
@@ -54,6 +57,7 @@ public class ReplacedShapedRecipe
 
 	public ReplacedShapedRecipe(ResourceLocation idIn, String groupIn, int recipeWidthIn, int recipeHeightIn,
 			NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn) {
+		super(idIn, groupIn, recipeWidthIn, recipeHeightIn, recipeItemsIn, recipeOutputIn);
 		this.id = idIn;
 		this.group = groupIn;
 		this.recipeWidth = recipeWidthIn;
@@ -67,7 +71,7 @@ public class ReplacedShapedRecipe
 	}
 
 	public IRecipeSerializer<?> getSerializer() {
-		return IRecipeSerializer.CRAFTING_SHAPED;
+		return RecipeRegister.replacedShaped;
 	}
 
 	/**
@@ -341,10 +345,10 @@ public class ReplacedShapedRecipe
 	}
 
 	public static class Serializer extends net.minecraftforge.registries.ForgeRegistryEntry<IRecipeSerializer<?>>
-			implements IRecipeSerializer<ReplacedShapedRecipe> {
+			implements IRecipeSerializer<ShapedRecipe> {
 		public static final ResourceLocation NAME = new ResourceLocation("minecraft", "crafting_shaped");
 
-		public ReplacedShapedRecipe read(ResourceLocation recipeId, JsonObject json) {
+		public ShapedRecipe read(ResourceLocation recipeId, JsonObject json) {
 			String s = JSONUtils.getString(json, "group", "");
 			Map<String, Ingredient> map = ReplacedShapedRecipe.deserializeKey(JSONUtils.getJsonObject(json, "key"));
 			String[] astring = ReplacedShapedRecipe
@@ -353,10 +357,15 @@ public class ReplacedShapedRecipe
 			int j = astring.length;
 			NonNullList<Ingredient> nonnulllist = ReplacedShapedRecipe.deserializeIngredients(astring, map, i, j);
 			ItemStack itemstack = ReplacedShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, "result"));
-			return new ReplacedShapedRecipe(recipeId, s, i, j, nonnulllist, itemstack);
+
+			if (ConfigCommon.CONFIG_COMMON.isReplaceVanillaRecipe.get()) {
+				return new ReplacedShapedRecipe(recipeId, s, i, j, nonnulllist, itemstack);
+			} else {
+				return new ShapedRecipe(recipeId, s, i, j, nonnulllist, itemstack);
+			}
 		}
 
-		public ReplacedShapedRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
+		public ShapedRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
 			int i = buffer.readVarInt();
 			int j = buffer.readVarInt();
 			String s = buffer.readString(32767);
@@ -367,19 +376,15 @@ public class ReplacedShapedRecipe
 			}
 
 			ItemStack itemstack = buffer.readItemStack();
-			return new ReplacedShapedRecipe(recipeId, s, i, j, nonnulllist, itemstack);
+			if (ConfigCommon.CONFIG_COMMON.isReplaceVanillaRecipe.get()) {
+				return new ReplacedShapedRecipe(recipeId, s, i, j, nonnulllist, itemstack);
+			} else {
+				return new ShapedRecipe(recipeId, s, i, j, nonnulllist, itemstack);
+			}
 		}
 
-		public void write(PacketBuffer buffer, ReplacedShapedRecipe recipe) {
-			buffer.writeVarInt(recipe.recipeWidth);
-			buffer.writeVarInt(recipe.recipeHeight);
-			buffer.writeString(recipe.group);
-
-			for (Ingredient ingredient : recipe.recipeItems) {
-				ingredient.write(buffer);
-			}
-
-			buffer.writeItemStack(recipe.recipeOutput);
+		public void write(PacketBuffer buffer, ShapedRecipe recipe) {
+			IRecipeSerializer.CRAFTING_SHAPED.write(buffer, recipe);
 		}
 	}
 }

@@ -192,6 +192,7 @@ public class ItemCompressed extends Item implements IItemCompressed {
 		ItemStack compressed = new ItemStack((Item) getCompressedItem(original));
 		setTime(compressed, n);
 		setOriginal(compressed, original);
+		compressed = getCompressedItem(original).onCompress(original.copy(), compressed.copy());
 		return compressed;
 	}
 

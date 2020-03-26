@@ -105,13 +105,24 @@ public class ClientProxy {
 	public static void doClientStuff(final FMLClientSetupEvent event) {
 
 		ModelLoader.addSpecialModel(Lib.ITEM_COMPRESSED_MODEL);
+		ModelLoader.addSpecialModel(Lib.ITEM_BLOCKCOMPRESSED_MODEL);
+		ModelLoader.addSpecialModel(Lib.ITEM_COMPRESSEDTOOL_MODEL);
+		ModelLoader.addSpecialModel(Lib.ITEM_COMPRESSEDSWORD_MODEL);
+
 		event.getMinecraftSupplier().get().getItemRenderer().getItemModelMesher().register(ItemRegister.ITEM_COMPRESSED,
 				Lib.ITEM_COMPRESSED_MODEL);
-		ModelLoader.addSpecialModel(Lib.ITEM_BLOCKCOMPRESSED_MODEL);
 
 		event.getMinecraftSupplier().get().getItemRenderer().getItemModelMesher().register(
 				ItemRegister.ITEM_BLOCKCOMPRESSED,
 				Lib.ITEM_BLOCKCOMPRESSED_MODEL);
+
+		event.getMinecraftSupplier().get().getItemRenderer().getItemModelMesher().register(
+				ItemRegister.ITEM_COMPRESSEDTOOL,
+				Lib.ITEM_COMPRESSEDTOOL_MODEL);
+
+		event.getMinecraftSupplier().get().getItemRenderer().getItemModelMesher().register(
+				ItemRegister.ITEM_COMPRESSEDSWORD,
+				Lib.ITEM_COMPRESSEDSWORD_MODEL);
 
 		addSpecialModels(BlockRegister.BLOCK_COMPRESSED);
 		addSpecialModels(BlockRegister.BLOCK_COMPRESSEDFURNACE);
@@ -136,13 +147,10 @@ public class ClientProxy {
 	@SubscribeEvent
 	public static void onModelBakeEvent(ModelBakeEvent event) {
 
-		/*event.getModelRegistry().put(Lib.BLOCK_COMPRESSED_MODEL, new ModelCompressedBlock());
-		event.getModelRegistry().put(new ModelResourceLocation(Lib.BLOCK_COMPRESSED_MODEL + "siderender=true"),
-				new ModelCompressedBlock());
-		event.getModelRegistry().put(new ModelResourceLocation(Lib.BLOCK_COMPRESSED_MODEL + "siderender=false"),
-				new ModelCompressedBlock());*/
 		event.getModelRegistry().put(Lib.ITEM_COMPRESSED_MODEL, new ModelCompressed());
 		event.getModelRegistry().put(Lib.ITEM_BLOCKCOMPRESSED_MODEL, new ModelCompressed());
+		event.getModelRegistry().put(Lib.ITEM_COMPRESSEDTOOL_MODEL, new ModelCompressed());
+		event.getModelRegistry().put(Lib.ITEM_COMPRESSEDSWORD_MODEL, new ModelCompressed());
 
 		modelRegister(BlockRegister.BLOCK_COMPRESSED, event.getModelRegistry());
 		modelRegister(BlockRegister.BLOCK_COMPRESSEDFURNACE, event.getModelRegistry());

@@ -3,6 +3,7 @@ package otamusan.nec.item;
 import java.util.ArrayList;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 public interface IItemCompressed {
 	public boolean isAvailable(Item item);
@@ -12,6 +13,10 @@ public interface IItemCompressed {
 	public default void addChildren(IItemCompressed iItemCompressed) {
 		getChildren().add(iItemCompressed);
 		iItemCompressed.setParent(this);
+	}
+
+	public default ItemStack onCompress(ItemStack original, ItemStack compressed) {
+		return compressed;
 	}
 
 	public default Item getItem(Item original) {

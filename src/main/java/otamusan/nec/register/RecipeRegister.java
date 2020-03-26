@@ -28,23 +28,13 @@ public class RecipeRegister {
 		e.getRegistry().register(new SpecialRecipeSerializer<>(DecompressionRecipe::new)
 				.setRegistryName(Lib.RECIPE_DECOMPRESSION));
 
-		//if (ConfigCommon.CONFIG_COMMON.isReplaceVanillaRecipe.get()) {
-
 		replacedShapeless.setRegistryName(ReplacedShapelessRecipe.Serializer.NAME);
 		replacedShaped.setRegistryName(ReplacedShapedRecipe.Serializer.NAME);
 
 		e.getRegistry().register(replacedShapeless);
 		e.getRegistry().register(replacedShaped);
-		//} else {
 		e.getRegistry().register(new SpecialRecipeSerializer<>(CompressedCraftingRecipe::new)
 				.setRegistryName(Lib.RECIPE_COMPRESSEDCRAFTING));
-		//}
 
-		/*e.getRegistry().register(new SpecialRecipeSerializer<>(CompressedSmeltingRecipe.Smelting::new)
-				.setRegistryName(Lib.RECIPE_COMPRESSEDSMELTING));
-		e.getRegistry().register(new SpecialRecipeSerializer<>(CompressedSmeltingRecipe.Smorking::new)
-				.setRegistryName(Lib.RECIPE_COMPRESSEDSMORKING));
-		e.getRegistry().register(new SpecialRecipeSerializer<>(CompressedSmeltingRecipe.Blasting::new)
-				.setRegistryName(Lib.RECIPE_COMPRESSEDBLASTING));*/
 	}
 }

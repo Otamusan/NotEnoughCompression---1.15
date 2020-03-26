@@ -6,7 +6,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.tileentity.AbstractFurnaceTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -53,7 +52,7 @@ public class BlockCompressedFurnace extends BlockCompressed {
 		if (state.getBlock() != newState.getBlock()) {
 			TileEntity tileentity = worldIn.getTileEntity(pos);
 			if (tileentity instanceof TileCompressedFurnace) {
-				InventoryHelper.dropInventoryItems(worldIn, pos, (AbstractFurnaceTileEntity) tileentity);
+				InventoryHelper.dropInventoryItems(worldIn, pos, (TileCompressedFurnace) tileentity);
 			}
 
 			super.onReplaced(state, worldIn, pos, newState, isMoving);

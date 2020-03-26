@@ -1,6 +1,7 @@
 package otamusan.nec.recipe;
 
 import java.util.Iterator;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -89,6 +90,17 @@ public abstract class NECRecipe extends SpecialRecipe {
 		for (ItemStack stack : getIterator(inv)) {
 			if (fuc.apply(stack))
 				n++;
+		}
+		return n;
+	}
+
+	public static int getSlotCount(CraftingInventory inv, BiFunction<Integer, ItemStack, Boolean> fuc) {
+		int n = 0;
+		int i = 0;
+		for (ItemStack stack : getIterator(inv)) {
+			if (fuc.apply(i, stack))
+				n++;
+			i++;
 		}
 		return n;
 	}

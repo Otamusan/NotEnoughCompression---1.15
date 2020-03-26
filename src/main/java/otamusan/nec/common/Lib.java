@@ -16,6 +16,8 @@ public class Lib {
 
 	public static final ResourceLocation ITEM_COMPRESSED = new ResourceLocation(MODID, "itemcompressed");
 	public static final ResourceLocation ITEM_BLOCKCOMPRESSED = new ResourceLocation(MODID, "itemblockcompressed");
+	public static final ResourceLocation ITEM_COMPRESSEDTOOL = new ResourceLocation(MODID, "itemcompressedtool");
+	public static final ResourceLocation ITEM_COMPRESSEDSWORD = new ResourceLocation(MODID, "itemcompressedsword");
 
 	public static final ResourceLocation BLOCK_COMPRESSED = new ResourceLocation(MODID, "blockcompressed");
 	public static final ResourceLocation BLOCK_COMPRESSEDFURNACE = new ResourceLocation(MODID,
@@ -25,14 +27,16 @@ public class Lib {
 			MODID + ":itemcompressedmodel", "inventory");
 	public static final ModelResourceLocation ITEM_BLOCKCOMPRESSED_MODEL = new ModelResourceLocation(
 			MODID + ":itemblockcompressedmodel", "inventory");
+	public static final ModelResourceLocation ITEM_COMPRESSEDTOOL_MODEL = new ModelResourceLocation(
+			MODID + ":itemcompressedtoolmodel", "inventory");
+	public static final ModelResourceLocation ITEM_COMPRESSEDSWORD_MODEL = new ModelResourceLocation(
+			MODID + ":itemcompressedswordmodel", "inventory");
 	public static final ModelResourceLocation BLOCK_COMPRESSED_MODEL = new ModelResourceLocation(
 			MODID + ":blockcompressed");
 	public final static ResourceLocation RECIPE_COMPRESSION = new ResourceLocation(MODID, "compression");
 	public final static ResourceLocation RECIPE_DECOMPRESSION = new ResourceLocation(MODID, "decompression");
 	public final static ResourceLocation RECIPE_COMPRESSEDCRAFTING = new ResourceLocation(MODID, "compressedcrafting");
-	/*public final static ResourceLocation RECIPE_COMPRESSEDSMELTING = new ResourceLocation(MODID, "compressedsmelting");
-	public final static ResourceLocation RECIPE_COMPRESSEDSMORKING = new ResourceLocation(MODID, "compressedsmorking");
-	public final static ResourceLocation RECIPE_COMPRESSEDBLASTING = new ResourceLocation(MODID, "compressedblasting");*/
+
 	public final static ResourceLocation TILETYPE_COMPRESSEDBLOCK = new ResourceLocation(MODID, "compressedblock");
 	public final static ResourceLocation TILETYPE_COMPRESSEDBLOCKFURNACE = new ResourceLocation(MODID,
 			"compressedblockfurnace");

@@ -23,9 +23,12 @@ public class TileCompressedBlock extends TileEntity implements ITileCompressed {
 
 	public void setCompresseData(CompressedData data) {
 		this.data = data;
+		this.markDirty();
 	}
 
 	public CompressedData getCompressedData() {
+		if (data == null)
+			return new CompressedData();
 		return data;
 	}
 

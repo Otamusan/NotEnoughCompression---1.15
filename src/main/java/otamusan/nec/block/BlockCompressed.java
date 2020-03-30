@@ -57,9 +57,8 @@ public class BlockCompressed extends Block implements IBlockCompressed {
 		return new TileCompressedBlock();
 	}
 
-	public ActionResultType func_225533_a_(BlockState p_225533_1_, World p_225533_2_, BlockPos p_225533_3_,
-			PlayerEntity p_225533_4_, Hand p_225533_5_, BlockRayTraceResult p_225533_6_) {
-		ITileCompressed tile = (ITileCompressed) p_225533_2_.getTileEntity(p_225533_3_);
+	public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos,
+			PlayerEntity entity, Hand hand, BlockRayTraceResult result) {
 		return ActionResultType.PASS;
 	}
 
@@ -82,7 +81,7 @@ public class BlockCompressed extends Block implements IBlockCompressed {
 
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		return getState(context.getWorld(), context.getItem(), context.getPos());
+		return IBlockCompressed.getState(context.getItem());
 	}
 
 	@OnlyIn(Dist.CLIENT)

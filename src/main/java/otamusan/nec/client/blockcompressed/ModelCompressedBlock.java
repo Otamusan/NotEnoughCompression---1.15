@@ -25,20 +25,21 @@ public class ModelCompressedBlock implements IBakedModel {
 
 	public final static ModelProperty<CompressedData> COMPRESSED_PROPERTY = new CompressedProperty();
 
-	public static IBakedModel getModel(IModelData data) {
+	public static BlockState getState(IModelData data) {
 		if (!data.hasProperty(COMPRESSED_PROPERTY))
-			return Minecraft.getInstance().getBlockRendererDispatcher()
-					.getModelForState(Blocks.STONE.getDefaultState());
+			return Blocks.STONE.getDefaultState();
+		return data.getData(COMPRESSED_PROPERTY).getState();
+	}
+
+	public static IBakedModel getModel(IModelData data) {
 		return Minecraft.getInstance().getBlockRendererDispatcher()
-				.getModelForState(data.getData(COMPRESSED_PROPERTY).getState());
+				.getModelForState(getState(data));
 	}
 
 	@Override
 	public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand, IModelData data) {
-		CompressedData compressedData = data.getData(COMPRESSED_PROPERTY);
-		List<BakedQuad> quads = Minecraft.getInstance().getBlockRendererDispatcher()
-				.getModelForState(compressedData.getState())
-				.getQuads(compressedData.getState(), side, rand, data);
+		List<BakedQuad> quads = getModel(data)
+				.getQuads(getState(data), side, rand, data);
 		List<BakedQuad> newquads = new ArrayList<>();
 
 		for (BakedQuad bakedQuad : quads) {

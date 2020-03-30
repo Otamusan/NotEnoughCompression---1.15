@@ -8,9 +8,9 @@ import net.minecraft.nbt.CompoundNBT;
 
 //For model
 public class CompressedData {
-	public BlockState state;
+	private BlockState state;
 	//If BlockState cannot function properly
-	public ItemStack stack;
+	private ItemStack stack;
 
 	public CompressedData() {
 		this.state = Blocks.STONE.getDefaultState();
@@ -37,15 +37,6 @@ public class CompressedData {
 
 	public int getStateInt() {
 		return state.getBlock().getStateId(state);
-	}
-
-	public void setStack(ItemStack stack) {
-		this.stack = stack.copy();
-		stack.setCount(1);
-	}
-
-	public void setState(BlockState state) {
-		this.state = state;
 	}
 
 	public ItemStack getStack() {

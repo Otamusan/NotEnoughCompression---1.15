@@ -24,7 +24,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
 import otamusan.nec.block.BlockCompressed;
 import otamusan.nec.block.IBlockCompressed;
-import otamusan.nec.block.tileentity.ITileCompressed;
 import otamusan.nec.client.blockcompressed.CompressedData;
 import otamusan.nec.common.Lib;
 import otamusan.nec.config.ConfigCommon;
@@ -98,27 +97,15 @@ public class CompressedChunkGenerator extends Feature<NoFeatureConfig> {
 		ItemStack item = state.getBlock().getItem(worldIn, pos, state);
 		ItemStack compressed = ItemCompressed.createCompressed(item, time);
 
-		worldIn.setBlockState(pos,
-				((IBlockCompressed) BlockCompressed.getCompressedBlockS(state.getBlock())).getState(worldIn, compressed,
-						pos),
-				11);
-		if (!(worldIn.getTileEntity(pos) instanceof ITileCompressed)) {
-			worldIn.setBlockState(pos, state, 11);
-			return false;
-			//worldIn.getWorld().removeTileEntity(pos);
-			//worldIn.getWorld().setTileEntity(pos, new TileCompressedBlock());
-		}
+		CompressedData data = new CompressedData(state, compressed);
 
-		ITileCompressed tileCompressed = (ITileCompressed) worldIn.getTileEntity(pos);
+		boolean isSuccess = IBlockCompressed.setCompressedBlock(pos, worldIn, data, true);
+		IBlockCompressed.lightCheck(worldIn, pos);
 
-		if (tileCompressed == null) {
+		if (!isSuccess) {
 			worldIn.setBlockState(pos, state, 11);
 			return false;
 		}
-
-		tileCompressed.setCompresseData(new CompressedData(state, compressed));
-
-		tileCompressed.setNatural(true);
 		return true;
 	}
 

@@ -10,8 +10,12 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import otamusan.nec.block.BlockCompressed;
+import otamusan.nec.block.BlockCompressedBrewingStand;
 import otamusan.nec.block.BlockCompressedFurnace;
+import otamusan.nec.block.BlockCompressedSapling;
 import otamusan.nec.block.tileentity.TileCompressedBlock;
+import otamusan.nec.block.tileentity.compressedbrewingstand.CompressedBrewingStandContainer;
+import otamusan.nec.block.tileentity.compressedbrewingstand.TileCompressedBrewingStand;
 import otamusan.nec.block.tileentity.compressedfurnace.CompressedFurnaceContainer;
 import otamusan.nec.block.tileentity.compressedfurnace.TileCompressedFurnace;
 import otamusan.nec.common.Lib;
@@ -21,15 +25,26 @@ public class BlockRegister {
 
 	public static BlockCompressed BLOCK_COMPRESSED;
 	public static BlockCompressed BLOCK_COMPRESSEDFURNACE;
+	public static BlockCompressed BLOCK_COMPRESSEDBREWINGSTAND;
+	public static BlockCompressed BLOCK_COMPRESSEDSAPLING;
 
 	public static TileEntityType<TileCompressedBlock> TILECOMPRESSEDTYPE;
 	public static TileEntityType<TileCompressedFurnace> TILECOMPRESSEDFURNACETYPE;
+	public static TileEntityType<TileCompressedBrewingStand> TILECOMPRESSEDBREWTINGSTANDETYPE;
 
 	public static ContainerType<CompressedFurnaceContainer> CONTAINERTYPE_FURNACE = new ContainerType<CompressedFurnaceContainer>(
 			new IFactory<CompressedFurnaceContainer>() {
 				@Override
 				public CompressedFurnaceContainer create(int p_create_1_, PlayerInventory p_create_2_) {
 					return new CompressedFurnaceContainer(CONTAINERTYPE_FURNACE, IRecipeType.SMELTING, p_create_1_,
+							p_create_2_);
+				}
+			});
+	public static ContainerType<CompressedBrewingStandContainer> CONTAINERTYPE_BREWINGSTAND = new ContainerType<CompressedBrewingStandContainer>(
+			new IFactory<CompressedBrewingStandContainer>() {
+				@Override
+				public CompressedBrewingStandContainer create(int p_create_1_, PlayerInventory p_create_2_) {
+					return new CompressedBrewingStandContainer(p_create_1_,
 							p_create_2_);
 				}
 			});
@@ -40,8 +55,16 @@ public class BlockRegister {
 				.setRegistryName(Lib.BLOCK_COMPRESSED);
 		BLOCK_COMPRESSEDFURNACE = (BlockCompressed) new BlockCompressedFurnace()
 				.setRegistryName(Lib.BLOCK_COMPRESSEDFURNACE);
+		BLOCK_COMPRESSEDBREWINGSTAND = (BlockCompressed) new BlockCompressedBrewingStand()
+				.setRegistryName(Lib.BLOCK_COMPRESSEDBREWINGSTAND);
+		BLOCK_COMPRESSEDSAPLING = (BlockCompressed) new BlockCompressedSapling()
+				.setRegistryName(Lib.BLOCK_COMPRESSEDSAPLING);
 		BLOCK_COMPRESSED.addChildren(BLOCK_COMPRESSEDFURNACE);
-		blockRegistryEvent.getRegistry().registerAll(BLOCK_COMPRESSED, BLOCK_COMPRESSEDFURNACE);
+		BLOCK_COMPRESSED.addChildren(BLOCK_COMPRESSEDBREWINGSTAND);
+		BLOCK_COMPRESSED.addChildren(BLOCK_COMPRESSEDSAPLING);
+
+		blockRegistryEvent.getRegistry().registerAll(BLOCK_COMPRESSED, BLOCK_COMPRESSEDFURNACE,
+				BLOCK_COMPRESSEDBREWINGSTAND, BLOCK_COMPRESSEDSAPLING);
 	}
 
 	@SubscribeEvent
@@ -51,11 +74,14 @@ public class BlockRegister {
 				.build(null);
 		TILECOMPRESSEDFURNACETYPE = TileEntityType.Builder
 				.create(TileCompressedFurnace::new, BlockRegister.BLOCK_COMPRESSEDFURNACE).build(null);
+		TILECOMPRESSEDBREWTINGSTANDETYPE = TileEntityType.Builder
+				.create(TileCompressedBrewingStand::new, BlockRegister.BLOCK_COMPRESSEDBREWINGSTAND).build(null);
 
 		TILECOMPRESSEDTYPE.setRegistryName(Lib.TILETYPE_COMPRESSEDBLOCK);
 		TILECOMPRESSEDFURNACETYPE.setRegistryName(Lib.TILETYPE_COMPRESSEDBLOCKFURNACE);
+		TILECOMPRESSEDBREWTINGSTANDETYPE.setRegistryName(Lib.TILETYPE_COMPRESSEDBLOCKBREWINGSTAND);
 
-		evt.getRegistry().registerAll(TILECOMPRESSEDTYPE, TILECOMPRESSEDFURNACETYPE);
+		evt.getRegistry().registerAll(TILECOMPRESSEDTYPE, TILECOMPRESSEDFURNACETYPE, TILECOMPRESSEDBREWTINGSTANDETYPE);
 
 	}
 
@@ -63,5 +89,7 @@ public class BlockRegister {
 	public static void registerContainer(RegistryEvent.Register<ContainerType<?>> evt) {
 		CONTAINERTYPE_FURNACE.setRegistryName(Lib.CONTAINERTYPE_FURNACE);
 		evt.getRegistry().register(CONTAINERTYPE_FURNACE);
+		CONTAINERTYPE_BREWINGSTAND.setRegistryName(Lib.CONTAINERTYPE_BREWINGSTAND);
+		evt.getRegistry().register(CONTAINERTYPE_BREWINGSTAND);
 	}
 }

@@ -30,6 +30,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import otamusan.nec.block.tileentity.ITileCompressed;
+import otamusan.nec.block.tileentity.compressedbrewingstand.CompressedBrewingStandContainer;
+import otamusan.nec.block.tileentity.compressedbrewingstand.CompressedBrewingStandScreen;
 import otamusan.nec.block.tileentity.compressedfurnace.CompressedFurnaceContainer;
 import otamusan.nec.block.tileentity.compressedfurnace.CompressedFurnaceScreen;
 import otamusan.nec.client.blockcompressed.ModelCompressedBlock;
@@ -126,12 +128,19 @@ public class ClientProxy {
 
 		addSpecialModels(BlockRegister.BLOCK_COMPRESSED);
 		addSpecialModels(BlockRegister.BLOCK_COMPRESSEDFURNACE);
+		addSpecialModels(BlockRegister.BLOCK_COMPRESSEDBREWINGSTAND);
+		addSpecialModels(BlockRegister.BLOCK_COMPRESSEDSAPLING);
 
 		setBlockColor(BlockRegister.BLOCK_COMPRESSED, event.getMinecraftSupplier().get().getBlockColors());
 		setBlockColor(BlockRegister.BLOCK_COMPRESSEDFURNACE, event.getMinecraftSupplier().get().getBlockColors());
+		setBlockColor(BlockRegister.BLOCK_COMPRESSEDBREWINGSTAND, event.getMinecraftSupplier().get().getBlockColors());
+		setBlockColor(BlockRegister.BLOCK_COMPRESSEDSAPLING, event.getMinecraftSupplier().get().getBlockColors());
 
 		RenderTypeLookup.setRenderLayer(BlockRegister.BLOCK_COMPRESSED, RenderType.func_228643_e_());
 		RenderTypeLookup.setRenderLayer(BlockRegister.BLOCK_COMPRESSEDFURNACE, RenderType.func_228643_e_());
+		RenderTypeLookup.setRenderLayer(BlockRegister.BLOCK_COMPRESSEDBREWINGSTAND, RenderType.func_228643_e_());
+		RenderTypeLookup.setRenderLayer(BlockRegister.BLOCK_COMPRESSEDSAPLING, RenderType.func_228643_e_());
+
 		ScreenManager.registerFactory(BlockRegister.CONTAINERTYPE_FURNACE,
 				new IScreenFactory<CompressedFurnaceContainer, CompressedFurnaceScreen>() {
 					@Override
@@ -139,6 +148,15 @@ public class ClientProxy {
 							PlayerInventory p_create_2_,
 							ITextComponent p_create_3_) {
 						return new CompressedFurnaceScreen(p_create_1_, p_create_2_, p_create_3_);
+					}
+				});
+		ScreenManager.registerFactory(BlockRegister.CONTAINERTYPE_BREWINGSTAND,
+				new IScreenFactory<CompressedBrewingStandContainer, CompressedBrewingStandScreen>() {
+					@Override
+					public CompressedBrewingStandScreen create(CompressedBrewingStandContainer p_create_1_,
+							PlayerInventory p_create_2_,
+							ITextComponent p_create_3_) {
+						return new CompressedBrewingStandScreen(p_create_1_, p_create_2_, p_create_3_);
 					}
 				});
 	}
@@ -154,5 +172,8 @@ public class ClientProxy {
 
 		modelRegister(BlockRegister.BLOCK_COMPRESSED, event.getModelRegistry());
 		modelRegister(BlockRegister.BLOCK_COMPRESSEDFURNACE, event.getModelRegistry());
+		modelRegister(BlockRegister.BLOCK_COMPRESSEDBREWINGSTAND, event.getModelRegistry());
+		modelRegister(BlockRegister.BLOCK_COMPRESSEDSAPLING, event.getModelRegistry());
+
 	}
 }

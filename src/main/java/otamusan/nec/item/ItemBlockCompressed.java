@@ -35,6 +35,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import otamusan.nec.block.BlockCompressed;
+import otamusan.nec.block.IBlockCompressed;
 import otamusan.nec.block.tileentity.ITileCompressed;
 import otamusan.nec.client.blockcompressed.CompressedData;
 import otamusan.nec.client.itemcompressed.CompressedTEISR;
@@ -86,6 +87,8 @@ public class ItemBlockCompressed extends BlockItem implements IItemCompressed {
 
 	public ActionResultType onItemUse(ItemUseContext context) {
 		ActionResultType actionresulttype = this.tryPlace(new BlockItemUseContext(context));
+		IBlockCompressed.lightCheck(context.getWorld(), context.getPos());
+
 		return actionresulttype != ActionResultType.SUCCESS && this.isFood()
 				? this.onItemRightClick(context.getWorld(), context.getPlayer(), context.getHand()).getType()
 				: actionresulttype;
@@ -128,6 +131,7 @@ public class ItemBlockCompressed extends BlockItem implements IItemCompressed {
 					itemstack.shrink(1);
 					return ActionResultType.SUCCESS;
 				}
+
 			}
 		}
 	}
@@ -196,6 +200,24 @@ public class ItemBlockCompressed extends BlockItem implements IItemCompressed {
 		return blockstate;
 	}
 
+	public static BlockState getStateFromItem(ItemStack stack) {
+		BlockState blockstate = ((BlockItem) ItemCompressed.getOriginal(stack).getItem()).getBlock().getDefaultState();
+		CompoundNBT compoundnbt = ItemCompressed.getOriginal(stack).getTag();
+		if (compoundnbt != null) {
+			CompoundNBT compoundnbt1 = compoundnbt.getCompound("BlockStateTag");
+			StateContainer<Block, BlockState> statecontainer = blockstate.getBlock().getStateContainer();
+
+			for (String s : compoundnbt1.keySet()) {
+				IProperty<?> iproperty = statecontainer.getProperty(s);
+				if (iproperty != null) {
+					String s1 = compoundnbt1.get(s).getString();
+					blockstate = func_219988_a(blockstate, iproperty, s1);
+				}
+			}
+		}
+		return blockstate;
+	}
+
 	private static <T extends Comparable<T>> BlockState func_219988_a(BlockState p_219988_0_, IProperty<T> p_219988_1_,
 			String p_219988_2_) {
 		return p_219988_1_.parseValue(p_219988_2_).map((p_219986_2_) -> {
@@ -207,7 +229,9 @@ public class ItemBlockCompressed extends BlockItem implements IItemCompressed {
 		PlayerEntity playerentity = p_195944_1_.getPlayer();
 		ISelectionContext iselectioncontext = playerentity == null ? ISelectionContext.dummy()
 				: ISelectionContext.forEntity(playerentity);
-		return (!this.func_219987_d() || p_195944_2_.isValidPosition(p_195944_1_.getWorld(), p_195944_1_.getPos()))
+
+		BlockState state = getStateFromItem(p_195944_1_.getItem());
+		return (!this.func_219987_d() || state.isValidPosition(p_195944_1_.getWorld(), p_195944_1_.getPos()))
 				&& p_195944_1_.getWorld().func_226663_a_(p_195944_2_, p_195944_1_.getPos(), iselectioncontext);
 	}
 

@@ -42,6 +42,14 @@ public class ItemCompressed extends Item implements IItemCompressed {
 		}));
 	}
 
+	public static long getTotal(ItemStack compressed) {
+		return getTotal(getTime(compressed));
+	}
+
+	public static long getTotal(int time) {
+		return (long) Math.pow(8, time);
+	}
+
 	@Override
 	public int getBurnTime(ItemStack itemStack) {
 		return (int) Math.pow(8, getTime(itemStack)) * getOriginal(itemStack).getBurnTime();

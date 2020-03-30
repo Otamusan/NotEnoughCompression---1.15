@@ -22,6 +22,10 @@ public class Lib {
 	public static final ResourceLocation BLOCK_COMPRESSED = new ResourceLocation(MODID, "blockcompressed");
 	public static final ResourceLocation BLOCK_COMPRESSEDFURNACE = new ResourceLocation(MODID,
 			"blockcompressedfurnace");
+	public static final ResourceLocation BLOCK_COMPRESSEDBREWINGSTAND = new ResourceLocation(MODID,
+			"blockcompressedbrewingstand");
+	public static final ResourceLocation BLOCK_COMPRESSEDSAPLING = new ResourceLocation(MODID,
+			"blockcompressedsapling");
 
 	public static final ModelResourceLocation ITEM_COMPRESSED_MODEL = new ModelResourceLocation(
 			MODID + ":itemcompressedmodel", "inventory");
@@ -40,8 +44,12 @@ public class Lib {
 	public final static ResourceLocation TILETYPE_COMPRESSEDBLOCK = new ResourceLocation(MODID, "compressedblock");
 	public final static ResourceLocation TILETYPE_COMPRESSEDBLOCKFURNACE = new ResourceLocation(MODID,
 			"compressedblockfurnace");
+	public final static ResourceLocation TILETYPE_COMPRESSEDBLOCKBREWINGSTAND = new ResourceLocation(MODID,
+			"compressedblockbrewingstand");
 
 	public final static ResourceLocation CONTAINERTYPE_FURNACE = new ResourceLocation(MODID, "compressedfurnace");
+	public final static ResourceLocation CONTAINERTYPE_BREWINGSTAND = new ResourceLocation(MODID,
+			"compressedbrewingstand");
 
 	public final static ResourceLocation FEATURE_COMPRESSEDCHUNK = new ResourceLocation(MODID, "compressedchunk");
 

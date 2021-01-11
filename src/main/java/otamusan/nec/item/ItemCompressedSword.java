@@ -29,6 +29,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
@@ -42,11 +43,7 @@ public class ItemCompressedSword extends SwordItem implements IItemCompressed {
 	}
 
 	public float getDestroySpeed(ItemStack stack, BlockState state) {
-		return ItemCompressed.getOriginal(stack).getDestroySpeed(state) * getCompressedModi(stack);
-	}
-
-	public static float getCompressedModi(ItemStack stack) {
-		return (float) Math.pow(1.5f, ItemCompressed.getTime(stack));
+		return ItemCompressed.getOriginal(stack).getDestroySpeed(state) * ItemCompressedTool.getSpeedModi(stack);
 	}
 
 	@Override
@@ -69,7 +66,7 @@ public class ItemCompressedSword extends SwordItem implements IItemCompressed {
 
 	@Override
 	public ItemStack onCompress(ItemStack original, ItemStack compressed) {
-		compressed.setDamage((int) (original.getDamage() * getCompressedModi(compressed)));
+		compressed.setDamage((int) (original.getDamage() * ItemCompressedTool.getDurabilityModi(compressed)));
 		return compressed;
 	}
 
@@ -91,7 +88,7 @@ public class ItemCompressedSword extends SwordItem implements IItemCompressed {
 
 	public static void syncDamage(ItemStack compressed) {
 		ItemStack original = ItemCompressed.getOriginal(compressed);
-		original.setDamage((int) (compressed.getDamage() / getCompressedModi(compressed)));
+		original.setDamage((int) (compressed.getDamage() / ItemCompressedTool.getDurabilityModi(compressed)));
 		ItemCompressed.setOriginal(compressed, original);
 	}
 
@@ -125,7 +122,7 @@ public class ItemCompressedSword extends SwordItem implements IItemCompressed {
 		Multimap<String, AttributeModifier> multimap = HashMultimap.create();
 		if (slot == EquipmentSlotType.MAINHAND) {
 			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER,
-					"Tool modifier", getAttackDamage(slot, stack) * getCompressedModi(stack),
+					"Tool modifier", getAttackDamage(slot, stack) * ItemCompressedTool.getAttackModi(stack),
 					AttributeModifier.Operation.ADDITION));
 			multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER,
 					"Tool modifier", getAttackSpeed(slot, stack), AttributeModifier.Operation.ADDITION));
@@ -157,7 +154,7 @@ public class ItemCompressedSword extends SwordItem implements IItemCompressed {
 
 	@Override
 	public int getMaxDamage(ItemStack stack) {
-		return (int) (ItemCompressed.getOriginal(stack).getMaxDamage() * getCompressedModi(stack));
+		return (int) (ItemCompressed.getOriginal(stack).getMaxDamage() * ItemCompressedTool.getDurabilityModi(stack));
 	}
 
 	@Override
@@ -227,6 +224,10 @@ public class ItemCompressedSword extends SwordItem implements IItemCompressed {
 
 	@Override
 	public ITextComponent getDisplayName(ItemStack stack) {
+		if (ItemCompressed.isSpecialized((IItemCompressed) stack.getItem()))
+			return new TranslationTextComponent("notenoughcompression.compressed", ItemCompressed.getTime(stack),
+					ItemCompressed.getOriginal(stack).getDisplayName()).applyTextStyles(TextFormatting.BOLD,
+							TextFormatting.AQUA);
 		return new TranslationTextComponent("notenoughcompression.compressed", ItemCompressed.getTime(stack),
 				ItemCompressed.getOriginal(stack).getDisplayName());
 	}
@@ -235,6 +236,12 @@ public class ItemCompressedSword extends SwordItem implements IItemCompressed {
 	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
 		//tooltip.add(getOriginal(stack).getDisplayName());
 		//tooltip.add(new StringTextComponent(getTime(stack) + " time"));
+		if (ItemCompressed.isSpecialized((IItemCompressed) stack.getItem())) {
+			TextFormatting formatting = TextFormatting.GOLD;
+			tooltip.add(new TranslationTextComponent("notenoughcompression.specialized").applyTextStyle(formatting));
+			tooltip.add(new TranslationTextComponent("notenoughcompression.itemtypedescription." + getCompressedName())
+					.applyTextStyle(formatting));
+		}
 
 		tooltip.add(new TranslationTextComponent("notenoughcompression.total",
 				(long) Math.pow(8, ItemCompressed.getTime(stack))));

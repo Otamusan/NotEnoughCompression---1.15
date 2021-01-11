@@ -1,5 +1,8 @@
 package otamusan.nec.block.blockstate;
 
+/*
+ * Now not using
+ */
 public class SideRender implements Comparable<SideRender> {
 	public boolean isrenderside;
 

@@ -44,7 +44,7 @@ public class ModelCompressedBlock implements IBakedModel {
 
 		for (BakedQuad bakedQuad : quads) {
 			newquads.add(new BakedQuad(bakedQuad.getVertexData(), bakedQuad.getTintIndex() + 100, bakedQuad.getFace(),
-					bakedQuad.getSprite(), bakedQuad.shouldApplyDiffuseLighting()));
+					bakedQuad.func_187508_a(), bakedQuad.shouldApplyDiffuseLighting()));
 		}
 		return newquads;
 		//return quads;

@@ -16,10 +16,15 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.BlockSnapshot;
 import otamusan.nec.block.tileentity.ITileCompressed;
 import otamusan.nec.client.blockcompressed.CompressedData;
+import otamusan.nec.config.ConfigCommon;
 import otamusan.nec.item.ItemCompressed;
 
 public class BlockCompressedSapling extends BlockCompressed implements IGrowable {
 	//SaplingBlock
+
+	public BlockCompressedSapling(Properties properties) {
+		super(properties);
+	}
 
 	@Override
 	public boolean isAvailable(Block item) {
@@ -32,19 +37,21 @@ public class BlockCompressedSapling extends BlockCompressed implements IGrowable
 	}
 
 	@Override
-	public void func_225534_a_(BlockState blockState, ServerWorld world, BlockPos pos,
+	public void tick(BlockState blockState, ServerWorld world, BlockPos pos,
 			Random rand) {
-		super.func_225534_a_(blockState, world, pos, rand);
+		super.tick(blockState, world, pos, rand);
 		if (!world.isAreaLoaded(pos, 1))
 			return;
-		if (world.getLight(pos.up()) >= 9
-				&& rand.nextInt(7) * ItemCompressed.getTotal(BlockCompressed.getOriginalItem(world, pos)) == 0) {
+		//if (world.getLight(pos.up()) >= 9
+		//		&& rand.nextInt(7) * ItemCompressed.getTotal(BlockCompressed.getOriginalItem(world, pos)) == 0) {
+		if (rand.nextInt((int) (7 * ItemCompressed.getTotal(BlockCompressed.getOriginalItem(world, pos)))) == 0
+				&& ConfigCommon.CONFIG_COMMON.slowDownTreeGrowthByTick.get()) {
 			grow(world, pos, rand);
 		}
 	}
 
 	public void grow(ServerWorld world, BlockPos pos, Random rand) {
-		BlockState original = IBlockCompressed.getBlockStateIn(world, pos);
+		BlockState original = getBlockStateIn(world, pos);
 
 		BlockState state = world.getBlockState(pos);
 
@@ -76,10 +83,10 @@ public class BlockCompressedSapling extends BlockCompressed implements IGrowable
 				ItemStack treeitem = ItemCompressed.createCompressed(
 						treestate.getBlock().getItem(snapshot.getWorld(), snapshot.getPos(), treestate), time);
 
-				IBlockCompressed.setCompressedBlock(snapshot.getPos(), snapshot.getWorld(),
+				setCompressedBlock(snapshot.getPos(), snapshot.getWorld(),
 						new CompressedData(treestate, treeitem), true);
 
-				IBlockCompressed.updateClient(world, pos);
+				updateClient(world, pos);
 			}
 		}
 	}
@@ -111,12 +118,16 @@ public class BlockCompressedSapling extends BlockCompressed implements IGrowable
 	}
 
 	public boolean canUseBonemeal(World worldIn, Random rand, BlockPos pos, BlockState state) {
-		return (double) worldIn.rand.nextFloat() < (0.45D
-				/ ItemCompressed.getTotal(BlockCompressed.getOriginalItem(worldIn, pos)));
+		if (ConfigCommon.CONFIG_COMMON.slowDownTreeGrowthByBoneMeal.get())
+			return (double) worldIn.rand.nextFloat() < (0.45D
+					/ ItemCompressed.getTotal(BlockCompressed.getOriginalItem(worldIn, pos)));
+		return worldIn.rand.nextFloat() < 0.45D;
 	}
 
-	public void func_225535_a_(ServerWorld p_225535_1_, Random p_225535_2_, BlockPos p_225535_3_,
+	@Override
+	public void grow(ServerWorld p_225535_1_, Random p_225535_2_, BlockPos p_225535_3_,
 			BlockState p_225535_4_) {
 		this.grow(p_225535_1_, p_225535_3_, p_225535_2_);
 	}
+
 }

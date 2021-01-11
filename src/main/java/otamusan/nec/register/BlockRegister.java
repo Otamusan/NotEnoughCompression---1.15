@@ -1,6 +1,7 @@
 package otamusan.nec.register;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.ContainerType.IFactory;
@@ -11,6 +12,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import otamusan.nec.block.BlockCompressed;
 import otamusan.nec.block.BlockCompressedBrewingStand;
+import otamusan.nec.block.BlockCompressedCrops;
 import otamusan.nec.block.BlockCompressedFurnace;
 import otamusan.nec.block.BlockCompressedSapling;
 import otamusan.nec.block.tileentity.TileCompressedBlock;
@@ -19,6 +21,7 @@ import otamusan.nec.block.tileentity.compressedbrewingstand.TileCompressedBrewin
 import otamusan.nec.block.tileentity.compressedfurnace.CompressedFurnaceContainer;
 import otamusan.nec.block.tileentity.compressedfurnace.TileCompressedFurnace;
 import otamusan.nec.common.Lib;
+import otamusan.nec.config.ConfigCommon;
 
 @Mod.EventBusSubscriber(modid = Lib.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class BlockRegister {
@@ -27,6 +30,7 @@ public class BlockRegister {
 	public static BlockCompressed BLOCK_COMPRESSEDFURNACE;
 	public static BlockCompressed BLOCK_COMPRESSEDBREWINGSTAND;
 	public static BlockCompressed BLOCK_COMPRESSEDSAPLING;
+	public static BlockCompressed BLOCK_COMPRESSEDCROPS;
 
 	public static TileEntityType<TileCompressedBlock> TILECOMPRESSEDTYPE;
 	public static TileEntityType<TileCompressedFurnace> TILECOMPRESSEDFURNACETYPE;
@@ -51,20 +55,31 @@ public class BlockRegister {
 
 	@SubscribeEvent
 	public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
-		BLOCK_COMPRESSED = (BlockCompressed) new BlockCompressed()
+		BLOCK_COMPRESSED = (BlockCompressed) new BlockCompressed(Block.Properties.create(Material.MISCELLANEOUS))
 				.setRegistryName(Lib.BLOCK_COMPRESSED);
-		BLOCK_COMPRESSEDFURNACE = (BlockCompressed) new BlockCompressedFurnace()
-				.setRegistryName(Lib.BLOCK_COMPRESSEDFURNACE);
-		BLOCK_COMPRESSEDBREWINGSTAND = (BlockCompressed) new BlockCompressedBrewingStand()
-				.setRegistryName(Lib.BLOCK_COMPRESSEDBREWINGSTAND);
-		BLOCK_COMPRESSEDSAPLING = (BlockCompressed) new BlockCompressedSapling()
-				.setRegistryName(Lib.BLOCK_COMPRESSEDSAPLING);
-		BLOCK_COMPRESSED.addChildren(BLOCK_COMPRESSEDFURNACE);
-		BLOCK_COMPRESSED.addChildren(BLOCK_COMPRESSEDBREWINGSTAND);
-		BLOCK_COMPRESSED.addChildren(BLOCK_COMPRESSEDSAPLING);
+		BLOCK_COMPRESSEDFURNACE = (BlockCompressed) new BlockCompressedFurnace(
+				Block.Properties.create(Material.MISCELLANEOUS).variableOpacity())
+						.setRegistryName(Lib.BLOCK_COMPRESSEDFURNACE);
+		BLOCK_COMPRESSEDBREWINGSTAND = (BlockCompressed) new BlockCompressedBrewingStand(
+				Block.Properties.create(Material.MISCELLANEOUS).variableOpacity())
+						.setRegistryName(Lib.BLOCK_COMPRESSEDBREWINGSTAND);
+		BLOCK_COMPRESSEDSAPLING = (BlockCompressed) new BlockCompressedSapling(
+				Block.Properties.create(Material.MISCELLANEOUS).tickRandomly().variableOpacity())
+						.setRegistryName(Lib.BLOCK_COMPRESSEDSAPLING);
+		BLOCK_COMPRESSEDCROPS = (BlockCompressed) new BlockCompressedCrops(
+				Block.Properties.create(Material.MISCELLANEOUS).tickRandomly().variableOpacity())
+						.setRegistryName(Lib.BLOCK_COMPRESSEDCROPS);
+		if (ConfigCommon.CONFIG_COMMON.specializeCompressedFurnace.get())
+			BLOCK_COMPRESSED.addChildren(BLOCK_COMPRESSEDFURNACE);
+		if (ConfigCommon.CONFIG_COMMON.specializeCompressedBrewingStand.get())
+			BLOCK_COMPRESSED.addChildren(BLOCK_COMPRESSEDBREWINGSTAND);
+		if (ConfigCommon.CONFIG_COMMON.specializeCompressedSapling.get())
+			BLOCK_COMPRESSED.addChildren(BLOCK_COMPRESSEDSAPLING);
+		if (ConfigCommon.CONFIG_COMMON.specializeCompressedCrops.get())
+			BLOCK_COMPRESSED.addChildren(BLOCK_COMPRESSEDCROPS);
 
 		blockRegistryEvent.getRegistry().registerAll(BLOCK_COMPRESSED, BLOCK_COMPRESSEDFURNACE,
-				BLOCK_COMPRESSEDBREWINGSTAND, BLOCK_COMPRESSEDSAPLING);
+				BLOCK_COMPRESSEDBREWINGSTAND, BLOCK_COMPRESSEDSAPLING, BLOCK_COMPRESSEDCROPS);
 	}
 
 	@SubscribeEvent

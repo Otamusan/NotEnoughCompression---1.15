@@ -34,11 +34,11 @@ import otamusan.nec.lib.ColorUtil;
 public class CompressedTEISR extends ItemStackTileEntityRenderer {
 	//ItemRenderer
 	@Override
-	public void func_228364_a_(ItemStack stack, MatrixStack matrix, IRenderTypeBuffer type,
+	public void render(ItemStack stack, MatrixStack matrix, IRenderTypeBuffer type,
 			int p_228364_4_, int p_228364_5_) {
 		IBakedModel model = Minecraft.getInstance().getItemRenderer()
 				.getItemModelWithOverrides(ItemCompressed.getOriginal(stack), null, null);
-		matrix.func_227861_a_(0.5D, 0.5D, 0.5D);
+		matrix.translate(0.5D, 0.5D, 0.5D);
 		renderItem(stack, geTransformType(), false, matrix, type, p_228364_4_, p_228364_5_, model);
 	}
 
@@ -46,9 +46,11 @@ public class CompressedTEISR extends ItemStackTileEntityRenderer {
 		StackTraceElement[] ste = new Throwable().getStackTrace();
 		if (ste[3].getMethodName() == "renderItemModelIntoGUI")
 			return TransformType.GUI;
-		if (ste[5].getMethodName() == "func_229084_a_")
+
+		if (ste[5].getMethodName() == "renderEntityStatic")
 			return TransformType.GROUND;
-		if (ste[4].getMethodName() == "func_228397_a_")
+
+		if (ste[4].getMethodName() == "renderItemSide")
 			return TransformType.FIRST_PERSON_LEFT_HAND;
 
 		return TransformType.GUI;
@@ -59,7 +61,7 @@ public class CompressedTEISR extends ItemStackTileEntityRenderer {
 			int p_229111_7_, IBakedModel model) {
 		if (stack.isEmpty())
 			return;
-		matrix.func_227860_a_();
+		matrix.push();
 		boolean flag = transformType == ItemCameraTransforms.TransformType.GUI;
 		boolean flag1 = flag || transformType == ItemCameraTransforms.TransformType.GROUND
 				|| transformType == ItemCameraTransforms.TransformType.FIXED;
@@ -71,34 +73,35 @@ public class CompressedTEISR extends ItemStackTileEntityRenderer {
 
 		model = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(matrix, model,
 				transformType, p_229111_3_);
-		matrix.func_227861_a_(-0.5D, -0.5D, -0.5D);
+		matrix.translate(-0.5D, -0.5D, -0.5D);
 		if (!model.isBuiltInRenderer() && (ItemCompressed.getOriginal(stack).getItem() != Items.TRIDENT || flag1)) {
-			RenderType rendertype = RenderTypeLookup.func_228389_a_(ItemCompressed.getOriginal(stack));
+			RenderType rendertype = RenderTypeLookup.getRenderType(ItemCompressed.getOriginal(stack));
 			RenderType rendertype1;
-			if (flag && Objects.equals(rendertype, Atlases.func_228784_i_())) {
-				rendertype1 = Atlases.func_228785_j_();
+			if (flag && Objects.equals(rendertype, Atlases.getTranslucentBlockType())) {
+				rendertype1 = Atlases.getTranslucentCullBlockType();
 			} else {
 				rendertype1 = rendertype;
 			}
 
-			IVertexBuilder ivertexbuilder = func_229113_a_(typeBuffer, rendertype1, true,
+			IVertexBuilder ivertexbuilder = getBuffer(typeBuffer, rendertype1, true,
 					ItemCompressed.getOriginal(stack).hasEffect());
 			this.renderModel(model, stack, p_229111_6_, p_229111_7_, matrix, ivertexbuilder);
 		} else {
-			ItemCompressed.getOriginal(stack).getItem().getItemStackTileEntityRenderer().func_228364_a_(
+			ItemCompressed.getOriginal(stack).getItem().getItemStackTileEntityRenderer().render(
 					ItemCompressed.getOriginal(stack),
 					matrix,
 					typeBuffer, p_229111_6_, p_229111_7_);
 		}
 
-		matrix.func_227865_b_();
+		matrix.pop();
+		;
 	}
 
-	public static IVertexBuilder func_229113_a_(IRenderTypeBuffer typeBuffer, RenderType renderType,
-			boolean p_229113_2_, boolean p_229113_3_) {
-		return p_229113_3_ ? VertexBuilderUtils.func_227915_a_(
-				typeBuffer.getBuffer(p_229113_2_ ? RenderType.func_228653_j_() : RenderType.func_228655_k_()),
-				typeBuffer.getBuffer(renderType)) : typeBuffer.getBuffer(renderType);
+	public static IVertexBuilder getBuffer(IRenderTypeBuffer bufferIn, RenderType renderTypeIn, boolean isItemIn,
+			boolean glintIn) {
+		return glintIn ? VertexBuilderUtils.newDelegate(
+				bufferIn.getBuffer(isItemIn ? RenderType.getGlint() : RenderType.getEntityGlint()),
+				bufferIn.getBuffer(renderTypeIn)) : bufferIn.getBuffer(renderTypeIn);
 	}
 
 	private void renderModel(IBakedModel model, ItemStack stack, int p_229114_3_, int p_229114_4_,
@@ -120,7 +123,7 @@ public class CompressedTEISR extends ItemStackTileEntityRenderer {
 	public void renderQueds(MatrixStack matrix, IVertexBuilder vertexBuilder, List<BakedQuad> queds,
 			ItemStack stack, int p_229112_5_, int p_229112_6_) {
 		boolean flag = !stack.isEmpty();
-		MatrixStack.Entry matrixstack$entry = matrix.func_227866_c_();
+		MatrixStack.Entry matrixstack$entry = matrix.getLast();
 
 		for (BakedQuad bakedquad : queds) {
 			int i = -1;

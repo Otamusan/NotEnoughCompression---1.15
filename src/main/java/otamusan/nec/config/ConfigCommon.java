@@ -10,6 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
@@ -41,6 +42,20 @@ public class ConfigCommon {
 	public IntValue deviationofTime;
 	public ConfigValue<List<? extends String>> placeExclusion;
 
+	public BooleanValue specializeCompressedBrewingStand;
+	public BooleanValue specializeCompressedCrops;
+	public BooleanValue slowDownCropsGrowthByTick;
+	public BooleanValue slowDownCropsGrowthByBoneMeal;
+	public BooleanValue specializeCompressedFurnace;
+	public BooleanValue specializeCompressedSapling;
+	public BooleanValue slowDownTreeGrowthByTick;
+	public BooleanValue slowDownTreeGrowthByBoneMeal;
+	public BooleanValue specializeCompressedSword;
+	public BooleanValue specializeCompressedTool;
+	public DoubleValue modifierofAttackDamage;
+	public DoubleValue modifierofMiningSpeed;
+	public DoubleValue modifierofMaxDurability;
+
 	public ConfigCommon(ForgeConfigSpec.Builder builder) {
 		builder.push("Compression");
 		compressionCatalyst = builder.comment("Catalyst item of Compression").define("compressionCatalyst",
@@ -71,6 +86,36 @@ public class ConfigCommon {
 		placeExclusion = builder.comment("Blocks written here can not be placed even if it is compressed").defineList(
 				"placeExclusion", new ArrayList<String>(), block -> true);
 		builder.pop();
+
+		builder.push("Specialize");
+		specializeCompressedBrewingStand = builder.comment("Whether to specialize compressed brewing stand")
+				.define("specializeCompressedBrewingStand", true);
+		specializeCompressedCrops = builder.comment("Whether to specialize compressed crops")
+				.define("specializeCompressedCrops", true);
+		slowDownCropsGrowthByTick = builder.comment("Whether to slow down compressed crops by randamtick")
+				.define("slowDownCropsGrowthByTick", false);
+		slowDownCropsGrowthByBoneMeal = builder.comment("Whether to slow down compressed crops by boneMeal")
+				.define("slowDownCropsGrowthByBoneMeal", true);
+		specializeCompressedFurnace = builder.comment("Whether to specialize compressed furnace")
+				.define("specializeCompressedFurnace", true);
+		specializeCompressedSapling = builder.comment("Whether to specialize compressed sapling")
+				.define("specializeCompressedSapling", true);
+		slowDownTreeGrowthByTick = builder.comment("Whether to slow down compressed tree by randamtick")
+				.define("slowDownTreeGrowthByTick", false);
+		slowDownTreeGrowthByBoneMeal = builder.comment("Whether to slow down compressed tree by boneMeal")
+				.define("slowDownTreeGrowthByBoneMeal", true);
+		specializeCompressedSword = builder.comment("Whether to specialize compressed sword")
+				.define("specializeCompressedSword", true);
+		specializeCompressedTool = builder.comment("Whether to specialize compressed tool")
+				.define("specializeCompressedTool", true);
+		modifierofAttackDamage = builder.comment("Modifier per compression of attack damage")
+				.defineInRange("modifierofAttackDamage", 1.5, 1, Double.MAX_VALUE);
+		modifierofMiningSpeed = builder.comment("Modifier per compression of mining speed")
+				.defineInRange("modifierofMiningSpeed", 1.5, 1, Double.MAX_VALUE);
+		modifierofMaxDurability = builder.comment("Modifier per compression of max durability")
+				.defineInRange("modifierofMaxDurability", 1.5, 1, Double.MAX_VALUE);
+		builder.pop();
+
 	}
 
 	public Item getCompressionCatalyst() {

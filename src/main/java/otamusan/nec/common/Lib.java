@@ -19,6 +19,8 @@ public class Lib {
 	public static final ResourceLocation ITEM_COMPRESSEDTOOL = new ResourceLocation(MODID, "itemcompressedtool");
 	public static final ResourceLocation ITEM_COMPRESSEDSWORD = new ResourceLocation(MODID, "itemcompressedsword");
 
+	public static final ResourceLocation ITEM_FLUIDUNIT = new ResourceLocation(MODID, "itemfluidunit");
+
 	public static final ResourceLocation BLOCK_COMPRESSED = new ResourceLocation(MODID, "blockcompressed");
 	public static final ResourceLocation BLOCK_COMPRESSEDFURNACE = new ResourceLocation(MODID,
 			"blockcompressedfurnace");
@@ -26,7 +28,8 @@ public class Lib {
 			"blockcompressedbrewingstand");
 	public static final ResourceLocation BLOCK_COMPRESSEDSAPLING = new ResourceLocation(MODID,
 			"blockcompressedsapling");
-
+	public static final ResourceLocation BLOCK_COMPRESSEDCROPS = new ResourceLocation(MODID,
+			"blockcompressedcrops");
 	public static final ModelResourceLocation ITEM_COMPRESSED_MODEL = new ModelResourceLocation(
 			MODID + ":itemcompressedmodel", "inventory");
 	public static final ModelResourceLocation ITEM_BLOCKCOMPRESSED_MODEL = new ModelResourceLocation(
@@ -35,6 +38,8 @@ public class Lib {
 			MODID + ":itemcompressedtoolmodel", "inventory");
 	public static final ModelResourceLocation ITEM_COMPRESSEDSWORD_MODEL = new ModelResourceLocation(
 			MODID + ":itemcompressedswordmodel", "inventory");
+	public static final ModelResourceLocation ITEM_FLUIDUNIT_MODEL = new ModelResourceLocation(
+			MODID + ":itemfluidunit", "inventory");
 	public static final ModelResourceLocation BLOCK_COMPRESSED_MODEL = new ModelResourceLocation(
 			MODID + ":blockcompressed");
 	public final static ResourceLocation RECIPE_COMPRESSION = new ResourceLocation(MODID, "compression");
@@ -55,4 +60,7 @@ public class Lib {
 
 	public final static String BSPROPERTY_SIDERENDER = MODID + "_siderender";
 	public final static ResourceLocation CAPPLAYER_ISFIRST = new ResourceLocation(MODID, "isfirst");
+
+	public final static ResourceLocation PACKET_NEC = new ResourceLocation(MODID, "nec");
+
 }

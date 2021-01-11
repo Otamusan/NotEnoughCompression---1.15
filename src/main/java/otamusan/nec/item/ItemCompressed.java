@@ -5,7 +5,11 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 
+import com.sun.java.accessibility.util.java.awt.TextComponentTranslator;
+import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,9 +21,11 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
+import net.minecraftforge.server.command.TextComponentHelper;
 import otamusan.nec.client.itemcompressed.CompressedTEISR;
 import otamusan.nec.common.Lib;
 import otamusan.nec.config.ConfigCommon;
@@ -72,6 +78,9 @@ public class ItemCompressed extends Item implements IItemCompressed {
 
 	@Override
 	public ITextComponent getDisplayName(ItemStack stack) {
+		if (isSpecialized((IItemCompressed) stack.getItem()))
+			return new TranslationTextComponent("notenoughcompression.compressed", getTime(stack),
+					getOriginal(stack).getDisplayName()).applyTextStyles(TextFormatting.BOLD, TextFormatting.AQUA);
 		return new TranslationTextComponent("notenoughcompression.compressed", getTime(stack),
 				getOriginal(stack).getDisplayName());
 	}
@@ -80,10 +89,20 @@ public class ItemCompressed extends Item implements IItemCompressed {
 	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
 		//tooltip.add(getOriginal(stack).getDisplayName());
 		//tooltip.add(new StringTextComponent(getTime(stack) + " time"));
+		if (isSpecialized((IItemCompressed) stack.getItem())) {
+			TextFormatting formatting = TextFormatting.GOLD;
+			tooltip.add(new TranslationTextComponent("notenoughcompression.specialized").applyTextStyle(formatting));
+			tooltip.add(new TranslationTextComponent("notenoughcompression.itemtypedescription." + getCompressedName())
+					.applyTextStyle(formatting));
+		}
 
-		tooltip.add(new TranslationTextComponent("notenoughcompression.total", (long) Math.pow(8, getTime(stack))));
+		tooltip.add(new TranslationTextComponent(getCompressedAmount(ItemCompressed.getTime(stack))));
 		tooltip.add(new TranslationTextComponent("notenoughcompression.compresseditem",
 				getOriginal(stack).getDisplayName()));
+	}
+
+	public static boolean isSpecialized(IItemCompressed itemCompressed) {
+		return itemCompressed.getCompressedName() != "base";
 	}
 
 	@Override
@@ -202,6 +221,43 @@ public class ItemCompressed extends Item implements IItemCompressed {
 		setOriginal(compressed, original);
 		compressed = getCompressedItem(original).onCompress(original.copy(), compressed.copy());
 		return compressed;
+	}
+
+	public static String getCompressedAmount(int time8) {
+		double log10_8 = Math.log(8) / Math.log(10);
+		double time10 = time8 * log10_8;
+		int time10_int = (int) time10;
+
+		int power_a;
+		if (time10_int >= 6)
+			power_a = time10_int % 3;
+		else
+			power_a = time10_int;
+
+		double time10_fract = time10 - time10_int;
+		double num_value = Math.pow(10, time10_fract);
+
+		double pow_a = Math.pow(10, power_a);
+
+		String str_value;
+		if (time10_int >= 6)
+			str_value = String.format("%.3f", num_value * pow_a);
+		else
+			str_value = String.format("%,.0f", num_value * pow_a);
+
+		int pow_1000 = (time10_int - power_a) / 3;
+		String str_1000;
+		String key = Lib.MODID + ".unit." + pow_1000;
+		if (time10_int >= 6 && !Screen.hasShiftDown())
+			//if (time10_int >= 6 && (!(I18n.hasKey(key)) || GuiScreen.isShiftKeyDown()))
+
+		str_1000 = new TranslationTextComponent(Lib.MODID + ".unit.huge", pow_1000).getString();
+		else
+			str_1000 = new TranslationTextComponent(key, pow_1000).getString();
+
+		String str_num = I18n.format(Lib.MODID + ".unit", str_value, str_1000);
+
+		return str_num;
 	}
 
 }

@@ -7,6 +7,9 @@ import java.util.Optional;
 import net.minecraft.state.IProperty;
 import otamusan.nec.common.Lib;
 
+/*
+ * Now not using
+ */
 public class PropertySideRender implements IProperty<SideRender> {
 
 	@Override

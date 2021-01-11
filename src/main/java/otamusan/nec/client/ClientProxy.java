@@ -39,6 +39,7 @@ import otamusan.nec.client.itemcompressed.ModelCompressed;
 import otamusan.nec.common.Lib;
 import otamusan.nec.item.ItemCompressed;
 import otamusan.nec.lib.ColorUtil;
+import otamusan.nec.network.NECPacketHandler;
 import otamusan.nec.register.BlockRegister;
 import otamusan.nec.register.ItemRegister;
 
@@ -61,7 +62,7 @@ public class ClientProxy {
 
 			} else {
 
-				int originalcolor = Minecraft.getInstance().getBlockColors().func_228054_a_(
+				int originalcolor = Minecraft.getInstance().getBlockColors().getColor(
 						tile.getCompressedData().getState(), var2, var3,
 						1);
 				return ColorUtil
@@ -105,6 +106,7 @@ public class ClientProxy {
 
 	@SubscribeEvent
 	public static void doClientStuff(final FMLClientSetupEvent event) {
+		NECPacketHandler.registerMessage();
 
 		ModelLoader.addSpecialModel(Lib.ITEM_COMPRESSED_MODEL);
 		ModelLoader.addSpecialModel(Lib.ITEM_BLOCKCOMPRESSED_MODEL);
@@ -126,20 +128,27 @@ public class ClientProxy {
 				ItemRegister.ITEM_COMPRESSEDSWORD,
 				Lib.ITEM_COMPRESSEDSWORD_MODEL);
 
+		event.getMinecraftSupplier().get().getItemRenderer().getItemModelMesher().register(
+				ItemRegister.ITEM_FLUIDUNIT,
+				Lib.ITEM_FLUIDUNIT_MODEL);
+
 		addSpecialModels(BlockRegister.BLOCK_COMPRESSED);
 		addSpecialModels(BlockRegister.BLOCK_COMPRESSEDFURNACE);
 		addSpecialModels(BlockRegister.BLOCK_COMPRESSEDBREWINGSTAND);
 		addSpecialModels(BlockRegister.BLOCK_COMPRESSEDSAPLING);
+		addSpecialModels(BlockRegister.BLOCK_COMPRESSEDCROPS);
 
 		setBlockColor(BlockRegister.BLOCK_COMPRESSED, event.getMinecraftSupplier().get().getBlockColors());
 		setBlockColor(BlockRegister.BLOCK_COMPRESSEDFURNACE, event.getMinecraftSupplier().get().getBlockColors());
 		setBlockColor(BlockRegister.BLOCK_COMPRESSEDBREWINGSTAND, event.getMinecraftSupplier().get().getBlockColors());
 		setBlockColor(BlockRegister.BLOCK_COMPRESSEDSAPLING, event.getMinecraftSupplier().get().getBlockColors());
+		setBlockColor(BlockRegister.BLOCK_COMPRESSEDCROPS, event.getMinecraftSupplier().get().getBlockColors());
 
-		RenderTypeLookup.setRenderLayer(BlockRegister.BLOCK_COMPRESSED, RenderType.func_228643_e_());
-		RenderTypeLookup.setRenderLayer(BlockRegister.BLOCK_COMPRESSEDFURNACE, RenderType.func_228643_e_());
-		RenderTypeLookup.setRenderLayer(BlockRegister.BLOCK_COMPRESSEDBREWINGSTAND, RenderType.func_228643_e_());
-		RenderTypeLookup.setRenderLayer(BlockRegister.BLOCK_COMPRESSEDSAPLING, RenderType.func_228643_e_());
+		RenderTypeLookup.setRenderLayer(BlockRegister.BLOCK_COMPRESSED, RenderType.getCutout());
+		RenderTypeLookup.setRenderLayer(BlockRegister.BLOCK_COMPRESSEDFURNACE, RenderType.getCutout());
+		RenderTypeLookup.setRenderLayer(BlockRegister.BLOCK_COMPRESSEDBREWINGSTAND, RenderType.getCutout());
+		RenderTypeLookup.setRenderLayer(BlockRegister.BLOCK_COMPRESSEDSAPLING, RenderType.getCutout());
+		RenderTypeLookup.setRenderLayer(BlockRegister.BLOCK_COMPRESSEDCROPS, RenderType.getCutout());
 
 		ScreenManager.registerFactory(BlockRegister.CONTAINERTYPE_FURNACE,
 				new IScreenFactory<CompressedFurnaceContainer, CompressedFurnaceScreen>() {
@@ -169,11 +178,13 @@ public class ClientProxy {
 		event.getModelRegistry().put(Lib.ITEM_BLOCKCOMPRESSED_MODEL, new ModelCompressed());
 		event.getModelRegistry().put(Lib.ITEM_COMPRESSEDTOOL_MODEL, new ModelCompressed());
 		event.getModelRegistry().put(Lib.ITEM_COMPRESSEDSWORD_MODEL, new ModelCompressed());
+		event.getModelRegistry().put(Lib.ITEM_FLUIDUNIT_MODEL, new ModelFluidUnit());
 
 		modelRegister(BlockRegister.BLOCK_COMPRESSED, event.getModelRegistry());
 		modelRegister(BlockRegister.BLOCK_COMPRESSEDFURNACE, event.getModelRegistry());
 		modelRegister(BlockRegister.BLOCK_COMPRESSEDBREWINGSTAND, event.getModelRegistry());
 		modelRegister(BlockRegister.BLOCK_COMPRESSEDSAPLING, event.getModelRegistry());
+		modelRegister(BlockRegister.BLOCK_COMPRESSEDCROPS, event.getModelRegistry());
 
 	}
 }

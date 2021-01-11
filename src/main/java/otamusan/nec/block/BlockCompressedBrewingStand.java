@@ -21,6 +21,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import otamusan.nec.block.tileentity.compressedbrewingstand.TileCompressedBrewingStand;
 
 public class BlockCompressedBrewingStand extends BlockCompressed {
+	public BlockCompressedBrewingStand(Properties properties) {
+		super(properties);
+	}
+
 	@Override
 	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
 		return new TileCompressedBrewingStand();
@@ -60,7 +64,8 @@ public class BlockCompressedBrewingStand extends BlockCompressed {
 
 	}
 
-	public ActionResultType func_225533_a_(BlockState p_225533_1_, World p_225533_2_, BlockPos p_225533_3_,
+	@Override
+	public ActionResultType onBlockActivated(BlockState p_225533_1_, World p_225533_2_, BlockPos p_225533_3_,
 			PlayerEntity p_225533_4_, Hand p_225533_5_, BlockRayTraceResult p_225533_6_) {
 		if (!p_225533_2_.isRemote) {
 			this.interactWith(p_225533_2_, p_225533_3_, p_225533_4_);

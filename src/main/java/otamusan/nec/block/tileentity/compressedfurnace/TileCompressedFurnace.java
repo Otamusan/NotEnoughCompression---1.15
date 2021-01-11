@@ -32,7 +32,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import otamusan.nec.block.IBlockCompressed;
+import otamusan.nec.block.BlockCompressed;
 import otamusan.nec.block.tileentity.TileCompressedBlock;
 import otamusan.nec.item.ItemCompressed;
 import otamusan.nec.recipe.NECRecipe;
@@ -244,7 +244,7 @@ public class TileCompressedFurnace extends TileCompressedBlock
 				flag1 = true;
 				//this.world.setBlockState(this.pos, this.world.getBlockState(this.pos).with(AbstractFurnaceBlock.LIT,
 				//	Boolean.valueOf(this.isBurning())), 3);
-				IBlockCompressed.setBlockStateIn(world, pos,
+				BlockCompressed.setBlockStateIn(world, pos,
 						data.getState().with(AbstractFurnaceBlock.LIT,
 								Boolean.valueOf(this.isBurning())));
 				/*this.world.setBlockState(this.pos, this.world.getBlockState(this.pos).with(AbstractFurnaceBlock.LIT,

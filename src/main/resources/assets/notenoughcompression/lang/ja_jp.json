@@ -1,0 +1,13 @@
+{
+    "item.notenoughcompression.itemcompressed":  "圧縮された",
+    "notenoughcompression.compressed": "%s重圧縮 %s",
+	"notenoughcompression.compresseditem":"圧縮されたアイテム : %s",
+	"notenoughcompression.total":"合計 : %s",
+	"notenoughcompression.specialized":"[特殊]",
+	"notenoughcompression.itemtypedescription.tool":"元のツールの強化版",
+	"notenoughcompression.itemtypedescription.sword":"元のツールの強化版",
+	"notenoughcompression.blocktypedescription.brewingstand":"圧縮材料と圧縮燃料を使って醸造ができる",
+	"notenoughcompression.blocktypedescription.crops":"植えて育てることができる。成長は遅い",
+	"notenoughcompression.blocktypedescription.furnace":"圧縮材料と圧縮燃料を使って精錬ができる",
+	"notenoughcompression.blocktypedescription.sapling":"植えて育てることができる。成長は遅い"
+}

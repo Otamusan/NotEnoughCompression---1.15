@@ -32,6 +32,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import otamusan.nec.block.BlockCompressed;
@@ -64,6 +65,10 @@ public class ItemBlockCompressed extends BlockItem implements IItemCompressed {
 
 	@Override
 	public ITextComponent getDisplayName(ItemStack stack) {
+		if (isSpecialized(stack))
+			return new TranslationTextComponent("notenoughcompression.compressed", ItemCompressed.getTime(stack),
+					ItemCompressed.getOriginal(stack).getDisplayName()).applyTextStyles(TextFormatting.BOLD,
+							TextFormatting.AQUA);
 		return new TranslationTextComponent("notenoughcompression.compressed", ItemCompressed.getTime(stack),
 				ItemCompressed.getOriginal(stack).getDisplayName());
 	}
@@ -73,10 +78,33 @@ public class ItemBlockCompressed extends BlockItem implements IItemCompressed {
 		//tooltip.add(getOriginal(stack).getDisplayName());
 		//tooltip.add(new StringTextComponent(getTime(stack) + " time"));
 
-		tooltip.add(new TranslationTextComponent("notenoughcompression.total",
-				(long) Math.pow(8, ItemCompressed.getTime(stack))));
+		if (isSpecialized(stack)) {
+			TextFormatting formatting = TextFormatting.GOLD;
+			tooltip.add(
+					new TranslationTextComponent("notenoughcompression.specialized").applyTextStyle(formatting));
+			Block block = ((BlockItem) ItemCompressed.getOriginal(stack).getItem()).getBlock();
+			IBlockCompressed blockCompressed = (IBlockCompressed) BlockCompressed
+					.getCompressedBlockS(block);
+			tooltip.add(
+					new TranslationTextComponent(
+							"notenoughcompression.blocktypedescription." + blockCompressed.getCompressedName())
+									.applyTextStyle(formatting));
+		}
+
+		tooltip.add(new TranslationTextComponent(ItemCompressed.getCompressedAmount(ItemCompressed.getTime(stack))));
+
 		tooltip.add(new TranslationTextComponent("notenoughcompression.compresseditem",
 				ItemCompressed.getOriginal(stack).getDisplayName()));
+	}
+
+	public static boolean isSpecialized(ItemStack stack) {
+		if (ItemCompressed.getOriginal(stack).isEmpty())
+			return false;
+		Block block = ((BlockItem) ItemCompressed.getOriginal(stack).getItem()).getBlock();
+		IBlockCompressed blockCompressed = (IBlockCompressed) BlockCompressed
+				.getCompressedBlockS(block);
+
+		return blockCompressed.getCompressedName() != "base";
 	}
 
 	@Override
@@ -85,9 +113,10 @@ public class ItemBlockCompressed extends BlockItem implements IItemCompressed {
 				* ItemCompressed.getOriginal(itemStack).getBurnTime();
 	}
 
+	@Override
 	public ActionResultType onItemUse(ItemUseContext context) {
 		ActionResultType actionresulttype = this.tryPlace(new BlockItemUseContext(context));
-		IBlockCompressed.lightCheck(context.getWorld(), context.getPos());
+		BlockCompressed.lightCheck(context.getWorld(), context.getPos());
 
 		return actionresulttype != ActionResultType.SUCCESS && this.isFood()
 				? this.onItemRightClick(context.getWorld(), context.getPlayer(), context.getHand()).getType()
@@ -115,7 +144,14 @@ public class ItemBlockCompressed extends BlockItem implements IItemCompressed {
 					BlockState blockstate1 = world.getBlockState(blockpos);
 					Block block = blockstate1.getBlock();
 					if (block == blockstate.getBlock()) {
+
+						BlockState state = blockstate1;
 						blockstate1 = this.func_219985_a(blockpos, world, itemstack, blockstate1);
+
+						if (state != blockstate1) {
+							world.setBlockState(blockpos, blockstate1, 2);
+						}
+
 						this.onBlockPlaced(blockpos, world, playerentity, itemstack, blockstate1, blockitemusecontext);
 						block.onBlockPlacedBy(world, blockpos, blockstate1, playerentity, itemstack);
 						if (playerentity instanceof ServerPlayerEntity) {
@@ -160,8 +196,14 @@ public class ItemBlockCompressed extends BlockItem implements IItemCompressed {
 		ITileCompressed tile = (ITileCompressed) worldIn.getTileEntity(pos);
 		Block block = ((BlockItem) ItemCompressed.getOriginal(stack).getItem()).getBlock();
 
-		BlockState state2 = func_219985_a(pos, worldIn, ItemCompressed.getOriginal(stack),
-				block.getStateForPlacement(getnew(useContext, ItemCompressed.getOriginal(stack))));
+		//BlockState state2 = func_219985_a(pos, worldIn, ItemCompressed.getOriginal(stack),
+		//block.getStateForPlacement(getnew(useContext, ItemCompressed.getOriginal(stack))));
+		BlockState state2 = getStateFromItem(stack);
+		/*System.out.println(state2);
+		System.out.println(state2);
+		System.out.println(state2);
+		System.out.println(state2);*/
+
 		tile.setCompresseData(new CompressedData(state2, stack));
 
 		return setTileEntityNBT(worldIn, player, pos, stack);
@@ -191,10 +233,6 @@ public class ItemBlockCompressed extends BlockItem implements IItemCompressed {
 					blockstate = func_219988_a(blockstate, iproperty, s1);
 				}
 			}
-		}
-
-		if (blockstate != p_219985_4_) {
-			p_219985_2_.setBlockState(p_219985_1_, blockstate, 2);
 		}
 
 		return blockstate;

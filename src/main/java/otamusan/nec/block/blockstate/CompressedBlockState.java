@@ -2,14 +2,11 @@ package otamusan.nec.block.blockstate;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
 
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
-import com.mojang.datafixers.Dynamic;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -29,14 +26,11 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathType;
 import net.minecraft.state.IProperty;
-import net.minecraft.state.IStateHolder;
-import net.minecraft.state.StateContainer;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Mirror;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -45,7 +39,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.EmptyBlockReader;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
@@ -60,7 +53,9 @@ import otamusan.nec.block.BlockCompressed;
 import otamusan.nec.block.tileentity.TileCompressedBlock;
 import otamusan.nec.item.ItemCompressed;
 
-//
+/*
+ * The compressed block uses this BlockState
+ */
 public class CompressedBlockState extends BlockState {
 	@Nullable
 	private CompressedBlockState.Cache cache;
@@ -70,7 +65,7 @@ public class CompressedBlockState extends BlockState {
 	public CompressedBlockState(Block blockIn, ImmutableMap<IProperty<?>, Comparable<?>> properties) {
 		super(blockIn, properties);
 		this.lightLevel = blockIn.getLightValue(this);
-		this.field_215709_e = blockIn.func_220074_n(this);
+		this.field_215709_e = blockIn.isTransparent(this);
 	}
 
 	@Override
@@ -146,48 +141,74 @@ public class CompressedBlockState extends BlockState {
 		return BlockCompressed.getOriginalState(world, pos).isFireSource(world, pos, side);
 	}
 
-	public void func_215692_c() {
+	@Override
+
+	public void cacheState() {
 		if (!this.getBlock().isVariableOpacity()) {
 			this.cache = new CompressedBlockState.Cache(this);
 		}
 
 	}
 
+	@Override
+
 	public Block getBlock() {
 		return this.object;
 	}
+
+	@Override
 
 	public Material getMaterial() {
 		return this.getBlock().getMaterial(this);
 	}
 
+	@Override
+
 	public boolean canEntitySpawn(IBlockReader worldIn, BlockPos pos, EntityType<?> type) {
 		return BlockCompressed.getOriginalState(worldIn, pos).canEntitySpawn(worldIn, pos, type);
 	}
+
+	@Override
 
 	public boolean propagatesSkylightDown(IBlockReader worldIn, BlockPos pos) {
 		return BlockCompressed.getOriginalState(worldIn, pos).propagatesSkylightDown(worldIn, pos);
 	}
 
+	@Override
+
 	public int getOpacity(IBlockReader worldIn, BlockPos pos) {
 		return BlockCompressed.getOriginalState(worldIn, pos).getOpacity(worldIn, pos);
+		//return Blocks.TALL_GRASS.getDefaultState().getOpacity(worldIn, pos);
 	}
 
-	public VoxelShape func_215702_a(IBlockReader worldIn, BlockPos pos, Direction directionIn) {
-		return BlockCompressed.getOriginalState(worldIn, pos).func_215702_a(worldIn, pos, directionIn);
+	@Override
+
+	public VoxelShape getFaceOcclusionShape(IBlockReader worldIn, BlockPos pos, Direction directionIn) {
+
+		//return Blocks.TALL_GRASS.getDefaultState().getFaceOcclusionShape(worldIn, pos, directionIn);
+		return BlockCompressed.getOriginalState(worldIn, pos).getFaceOcclusionShape(worldIn, pos, directionIn);
 	}
 
-	public boolean func_215704_f() {
+	@Override
+
+	public boolean isCollisionShapeLargerThanFullBlock() {
 		return this.cache == null || this.cache.isCollisionShapeLargerThanFullBlock;
 	}
 
-	public boolean func_215691_g() {
-		return this.field_215709_e;
+	@Override
+
+	public boolean isTransparent() {
+		//return this.field_215709_e
+		return true;
 	}
+
+	@Override
 
 	public int getLightValue() {
 		return this.lightLevel;
 	}
+
+	@Override
 
 	/** @deprecated use {@link BlockState#isAir(IBlockReader, BlockPos) */
 	@Deprecated
@@ -195,11 +216,15 @@ public class CompressedBlockState extends BlockState {
 		return this.getBlock().isAir(this);
 	}
 
+	@Override
+
 	/** @deprecated use {@link BlockState#rotate(IWorld, BlockPos, Rotation) */
 	@Deprecated
 	public MaterialColor getMaterialColor(IBlockReader worldIn, BlockPos pos) {
 		return BlockCompressed.getOriginalState(worldIn, pos).getMaterialColor(worldIn, pos);
 	}
+
+	@Override
 
 	/**
 	 * Returns the blockstate with the given rotation. If inapplicable, returns itself.
@@ -208,6 +233,8 @@ public class CompressedBlockState extends BlockState {
 		return this.getBlock().rotate(this, rot);
 	}
 
+	@Override
+
 	/**
 	 * Returns the blockstate mirrored in the given way. If inapplicable, returns itself.
 	 */
@@ -215,43 +242,63 @@ public class CompressedBlockState extends BlockState {
 		return this.getBlock().mirror(this, mirrorIn);
 	}
 
+	@Override
+
 	public BlockRenderType getRenderType() {
 		return this.getBlock().getRenderType(this);
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	public boolean func_227035_k_() {
-		return this.getBlock().func_225543_m_(this);
-	}
+	@Override
 
 	@OnlyIn(Dist.CLIENT)
-	public float func_215703_d(IBlockReader reader, BlockPos pos) {
-		return BlockCompressed.getOriginalState(reader, pos).func_215703_d(reader, pos);
+	public boolean isEmissiveRendering() {
+		return this.getBlock().isEmissiveRendering(this);
 	}
+
+	@Override
+
+	@OnlyIn(Dist.CLIENT)
+	public float getAmbientOcclusionLightValue(IBlockReader reader, BlockPos pos) {
+		return BlockCompressed.getOriginalState(reader, pos).getAmbientOcclusionLightValue(reader, pos);
+	}
+
+	@Override
 
 	public boolean isNormalCube(IBlockReader reader, BlockPos pos) {
 		return BlockCompressed.getOriginalState(reader, pos).isNormalCube(reader, pos);
 	}
 
+	@Override
+
 	public boolean canProvidePower() {
 		return this.getBlock().canProvidePower(this);
 	}
+
+	@Override
 
 	public int getWeakPower(IBlockReader blockAccess, BlockPos pos, Direction side) {
 		return BlockCompressed.getOriginalState(blockAccess, pos).getWeakPower(blockAccess, pos, side);
 	}
 
+	@Override
+
 	public boolean hasComparatorInputOverride() {
 		return this.getBlock().hasComparatorInputOverride(this);
 	}
+
+	@Override
 
 	public int getComparatorInputOverride(World worldIn, BlockPos pos) {
 		return this.getBlock().getComparatorInputOverride(this, worldIn, pos);
 	}
 
+	@Override
+
 	public float getBlockHardness(IBlockReader worldIn, BlockPos pos) {
 		return this.getBlock().getBlockHardness(this, worldIn, pos);
 	}
+
+	@Override
 
 	public float getPlayerRelativeBlockHardness(PlayerEntity player, IBlockReader worldIn, BlockPos pos) {
 		BlockState state2 = BlockCompressed.getOriginalState(worldIn, pos);
@@ -270,50 +317,72 @@ public class CompressedBlockState extends BlockState {
 		}
 	}
 
+	@Override
+
 	public int getStrongPower(IBlockReader blockAccess, BlockPos pos, Direction side) {
 		return BlockCompressed.getOriginalState(blockAccess, pos).getStrongPower(blockAccess, pos, side);
 	}
+
+	@Override
 
 	public PushReaction getPushReaction() {
 		return this.getBlock().getPushReaction(this);
 	}
 
+	@Override
 	public boolean isOpaqueCube(IBlockReader worldIn, BlockPos pos) {
-		return BlockCompressed.getOriginalState(worldIn, pos).isOpaqueCube(worldIn, pos);
+		return true;
+		//return BlockCompressed.getOriginalState(worldIn, pos).isOpaqueCube(worldIn, pos);
 	}
 
+	@Override
 	public boolean isSolid() {
 		if (!this.has(BlockCompressed.PRO_SIDERENDER))
 			return true;
 		return this.get(BlockCompressed.PRO_SIDERENDER).booleanValue();
 	}
 
+	@Override
 	@OnlyIn(Dist.CLIENT)
 	public boolean isSideInvisible(BlockState state, Direction face) {
 		return this.getBlock().isSideInvisible(this, state, face);
 	}
 
+	@Override
+
 	public VoxelShape getShape(IBlockReader worldIn, BlockPos pos) {
 		return BlockCompressed.getOriginalState(worldIn, pos).getShape(worldIn, pos);
 	}
+
+	@Override
 
 	public VoxelShape getShape(IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
 		return BlockCompressed.getOriginalState(worldIn, pos).getShape(worldIn, pos, context);
 	}
 
+	@Override
+
 	public VoxelShape getCollisionShape(IBlockReader worldIn, BlockPos pos) {
 		return BlockCompressed.getOriginalState(worldIn, pos).getCollisionShape(worldIn, pos);
 	}
+
+	@Override
 
 	public VoxelShape getCollisionShape(IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
 		return BlockCompressed.getOriginalState(worldIn, pos).getCollisionShape(worldIn, pos, context);
 	}
 
+	@Override
+
 	public VoxelShape getRenderShape(IBlockReader worldIn, BlockPos pos) {
 		return BlockCompressed.getOriginalState(worldIn, pos).getRenderShape(worldIn, pos);
 	}
 
+	@Override
+
 	public VoxelShape getRaytraceShape(IBlockReader worldIn, BlockPos pos) {
+		//return Blocks.TALL_GRASS.getDefaultState().getRaytraceShape(worldIn, pos);
+
 		return BlockCompressed.getOriginalState(worldIn, pos).getRaytraceShape(worldIn, pos);
 	}
 
@@ -321,6 +390,7 @@ public class CompressedBlockState extends BlockState {
 		return Block.doesSideFillSquare(this.getCollisionShape(reader, pos, ISelectionContext.forEntity(entityIn)),
 				Direction.UP);
 	}*/
+	@Override
 
 	public Vec3d getOffset(IBlockReader access, BlockPos pos) {
 		return BlockCompressed.getOriginalState(access, pos).getOffset(access, pos);
@@ -332,9 +402,13 @@ public class CompressedBlockState extends BlockState {
 	 * involve replacing tile entities, playing sounds, or performing other visual actions to reflect the server side
 	 * changes.
 	 */
+	@Override
+
 	public boolean onBlockEventReceived(World worldIn, BlockPos pos, int id, int param) {
 		return this.getBlock().eventReceived(this, worldIn, pos, id, param);
 	}
+
+	@Override
 
 	public void neighborChanged(World worldIn, BlockPos p_215697_2_, Block blockIn, BlockPos p_215697_4_,
 			boolean isMoving) {
@@ -346,6 +420,8 @@ public class CompressedBlockState extends BlockState {
 	 * example, fences make their connections to this block if possible and observers pulse if this block was placed in
 	 * front of their detector
 	 */
+	@Override
+
 	public void updateNeighbors(IWorld worldIn, BlockPos pos, int flags) {
 		this.getBlock().updateNeighbors(this, worldIn, pos, flags);
 	}
@@ -355,141 +431,175 @@ public class CompressedBlockState extends BlockState {
 	 * valid to stay in the world. Currently used only by redstone wire to update itself if neighboring blocks have
 	 * changed and to possibly break itself.
 	 */
+	@Override
+
 	public void updateDiagonalNeighbors(IWorld worldIn, BlockPos pos, int flags) {
 		this.getBlock().updateDiagonalNeighbors(this, worldIn, pos, flags);
 	}
+
+	@Override
 
 	public void onBlockAdded(World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
 		this.getBlock().onBlockAdded(this, worldIn, pos, oldState, isMoving);
 	}
 
+	@Override
+
 	public void onReplaced(World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
 		this.getBlock().onReplaced(this, worldIn, pos, newState, isMoving);
 	}
 
-	public void func_227033_a_(ServerWorld p_227033_1_, BlockPos p_227033_2_, Random p_227033_3_) {
-		this.getBlock().func_225534_a_(this, p_227033_1_, p_227033_2_, p_227033_3_);
+	@Override
+
+	public void tick(ServerWorld p_227033_1_, BlockPos p_227033_2_, Random p_227033_3_) {
+		this.getBlock().tick(this, p_227033_1_, p_227033_2_, p_227033_3_);
 	}
 
-	public void func_227034_b_(ServerWorld p_227034_1_, BlockPos p_227034_2_, Random p_227034_3_) {
-		this.getBlock().func_225542_b_(this, p_227034_1_, p_227034_2_, p_227034_3_);
+	@Override
+
+	public void randomTick(ServerWorld p_227034_1_, BlockPos p_227034_2_, Random p_227034_3_) {
+		this.getBlock().randomTick(this, p_227034_1_, p_227034_2_, p_227034_3_);
 	}
+
+	@Override
 
 	public void onEntityCollision(World worldIn, BlockPos pos, Entity entityIn) {
 		this.getBlock().onEntityCollision(this, worldIn, pos, entityIn);
 	}
 
+	@Override
+
 	public void spawnAdditionalDrops(World worldIn, BlockPos pos, ItemStack stack) {
 		this.getBlock().spawnAdditionalDrops(this, worldIn, pos, stack);
 	}
+
+	@Override
 
 	public List<ItemStack> getDrops(LootContext.Builder builder) {
 		return this.getBlock().getDrops(this, builder);
 	}
 
-	public ActionResultType func_227031_a_(World p_227031_1_, PlayerEntity p_227031_2_, Hand p_227031_3_,
+	@Override
+
+	public ActionResultType onBlockActivated(World p_227031_1_, PlayerEntity p_227031_2_, Hand p_227031_3_,
 			BlockRayTraceResult p_227031_4_) {
-		return this.getBlock().func_225533_a_(this, p_227031_1_, p_227031_4_.getPos(), p_227031_2_, p_227031_3_,
+		return this.getBlock().onBlockActivated(this, p_227031_1_, p_227031_4_.getPos(), p_227031_2_, p_227031_3_,
 				p_227031_4_);
 	}
+
+	@Override
 
 	public void onBlockClicked(World worldIn, BlockPos pos, PlayerEntity player) {
 		this.getBlock().onBlockClicked(this, worldIn, pos, player);
 	}
 
-	public boolean func_229980_m_(IBlockReader p_229980_1_, BlockPos p_229980_2_) {
-		return BlockCompressed.getOriginalState(p_229980_1_, p_229980_2_).func_229980_m_(p_229980_1_, p_229980_2_);
+	@Override
+
+	public boolean isSuffocating(IBlockReader p_229980_1_, BlockPos p_229980_2_) {
+		return BlockCompressed.getOriginalState(p_229980_1_, p_229980_2_).isSuffocating(p_229980_1_, p_229980_2_);
 	}
+
+	@Override
 
 	@OnlyIn(Dist.CLIENT)
 	public boolean causesSuffocation(IBlockReader worldIn, BlockPos pos) {
 		return BlockCompressed.getOriginalState(worldIn, pos).causesSuffocation(worldIn, pos);
 	}
 
+	@Override
+
 	public BlockState updatePostPlacement(Direction face, BlockState queried, IWorld worldIn, BlockPos currentPos,
 			BlockPos offsetPos) {
 		return this.getBlock().updatePostPlacement(this, face, queried, worldIn, currentPos, offsetPos);
 	}
 
+	@Override
+
 	public boolean allowsMovement(IBlockReader worldIn, BlockPos pos, PathType type) {
 		return this.getBlock().allowsMovement(this, worldIn, pos, type);
 	}
+
+	@Override
 
 	public boolean isReplaceable(BlockItemUseContext useContext) {
 		return BlockCompressed.getOriginalState(useContext.getWorld(), useContext.getPos()).isReplaceable(useContext);
 	}
 
-	public boolean func_227032_a_(Fluid p_227032_1_) {
-		return this.getBlock().func_225541_a_(this, p_227032_1_);
+	@Override
+
+	public boolean isReplaceable(Fluid p_227032_1_) {
+		return this.getBlock().isReplaceable(this, p_227032_1_);
 	}
+
+	@Override
 
 	public boolean isValidPosition(IWorldReader worldIn, BlockPos pos) {
 		return BlockCompressed.getOriginalState(worldIn, pos).isValidPosition(worldIn, pos);
 	}
 
+	@Override
+
 	public boolean blockNeedsPostProcessing(IBlockReader worldIn, BlockPos pos) {
 		return this.getBlock().needsPostProcessing(this, worldIn, pos);
 	}
+
+	@Override
 
 	@Nullable
 	public INamedContainerProvider getContainer(World worldIn, BlockPos pos) {
 		return this.getBlock().getContainer(this, worldIn, pos);
 	}
 
+	@Override
+
 	public boolean isIn(Tag<Block> tagIn) {
 		return this.getBlock().isIn(tagIn);
 	}
+
+	@Override
 
 	public IFluidState getFluidState() {
 		return this.getBlock().getFluidState(this);
 	}
 
+	@Override
+
 	public boolean ticksRandomly() {
 		return this.getBlock().ticksRandomly(this);
 	}
+
+	@Override
 
 	@OnlyIn(Dist.CLIENT)
 	public long getPositionRandom(BlockPos pos) {
 		return this.getBlock().getPositionRandom(this, pos);
 	}
 
+	@Override
+
 	public SoundType getSoundType() {
 		return this.getBlock().getSoundType(this);
 	}
+
+	@Override
 
 	public void onProjectileCollision(World worldIn, BlockState state, BlockRayTraceResult hit, Entity projectile) {
 		this.getBlock().onProjectileCollision(worldIn, state, hit, projectile);
 	}
 
-	public boolean func_224755_d(IBlockReader p_224755_1_, BlockPos p_224755_2_, Direction p_224755_3_) {
-		return BlockCompressed.getOriginalState(p_224755_1_, p_224755_2_).func_224755_d(p_224755_1_, p_224755_2_,
+	@Override
+
+	public boolean isSolidSide(IBlockReader p_224755_1_, BlockPos p_224755_2_, Direction p_224755_3_) {
+		return BlockCompressed.getOriginalState(p_224755_1_, p_224755_2_).isSolidSide(p_224755_1_, p_224755_2_,
 				p_224755_3_);
 	}
 
-	public boolean func_224756_o(IBlockReader p_224756_1_, BlockPos p_224756_2_) {
-		return BlockCompressed.getOriginalState(p_224756_1_, p_224756_2_).func_224756_o(p_224756_1_, p_224756_2_);
-	}
+	@Override
 
-	public static <T> BlockState deserialize(Dynamic<T> dynamic) {
-		Block block = Registry.BLOCK.getOrDefault(new ResourceLocation(
-				dynamic.getElement("Name").flatMap(dynamic.getOps()::getStringValue).orElse("minecraft:air")));
-		Map<String, String> map = dynamic.get("Properties").asMap((p_215701_0_) -> {
-			return p_215701_0_.asString("");
-		}, (p_215694_0_) -> {
-			return p_215694_0_.asString("");
-		});
-		BlockState blockstate = block.getDefaultState();
-		StateContainer<Block, BlockState> statecontainer = block.getStateContainer();
-
-		for (Entry<String, String> entry : map.entrySet()) {
-			String s = entry.getKey();
-			IProperty<?> iproperty = statecontainer.getProperty(s);
-			if (iproperty != null) {
-				blockstate = IStateHolder.func_215671_a(blockstate, iproperty, s, dynamic.toString(), entry.getValue());
-			}
-		}
-
-		return blockstate;
+	public boolean isCollisionShapeOpaque(IBlockReader p_224756_1_, BlockPos p_224756_2_) {
+		//return BlockCompressed.getOriginalState(p_224756_1_, p_224756_2_).isCollisionShapeOpaque(p_224756_1_,
+		//		p_224756_2_);
+		return true;
 	}
 
 	static final class Cache {
@@ -518,7 +628,7 @@ public class CompressedBlockState extends BlockState {
 				VoxelShape voxelshape = block.getRenderShape(stateIn, EmptyBlockReader.INSTANCE, BlockPos.ZERO);
 
 				for (Direction direction : DIRECTIONS) {
-					this.renderShapes[direction.ordinal()] = VoxelShapes.func_216387_a(voxelshape, direction);
+					this.renderShapes[direction.ordinal()] = VoxelShapes.getFaceShape(voxelshape, direction);
 				}
 			}
 

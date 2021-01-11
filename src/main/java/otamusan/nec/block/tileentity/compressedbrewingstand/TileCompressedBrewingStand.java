@@ -26,7 +26,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import otamusan.nec.block.IBlockCompressed;
+import otamusan.nec.block.BlockCompressed;
 import otamusan.nec.block.tileentity.TileCompressedBlock;
 import otamusan.nec.item.ItemCompressed;
 import otamusan.nec.register.BlockRegister;
@@ -127,7 +127,7 @@ public class TileCompressedBrewingStand extends TileCompressedBlock
 			boolean[] aboolean = this.createFilledSlotsArray();
 			if (!Arrays.equals(aboolean, this.filledSlots)) {
 				this.filledSlots = aboolean;
-				BlockState blockstate = IBlockCompressed.getBlockStateIn(world, pos);
+				BlockState blockstate = BlockCompressed.getBlockStateIn(world, pos);
 				if (!(blockstate.getBlock() instanceof BrewingStandBlock)) {
 					return;
 				}
@@ -137,7 +137,7 @@ public class TileCompressedBrewingStand extends TileCompressedBlock
 				}
 
 				//this.world.setBlockState(this.pos, blockstate, 2);
-				IBlockCompressed.setBlockStateIn(world, pos, blockstate);
+				BlockCompressed.setBlockStateIn(world, pos, blockstate);
 			}
 		}
 

@@ -17,9 +17,11 @@ import otamusan.nec.common.AutoCompression;
 import otamusan.nec.common.BreakCompressedBlock;
 import otamusan.nec.common.GiveItems;
 import otamusan.nec.common.Lib;
+import otamusan.nec.common.UpdateChunkLight;
 import otamusan.nec.config.ConfigClient;
 import otamusan.nec.config.ConfigCommon;
 import otamusan.nec.config.ConfigServer;
+import otamusan.nec.network.NECPacketHandler;
 
 @Mod(Lib.MODID)
 
@@ -34,17 +36,18 @@ public class NotEnoughCompression {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
-
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {
+		NECPacketHandler.registerMessage();
 	}
 
 	private void enqueueIMC(final InterModEnqueueEvent event) {
 		MinecraftForge.EVENT_BUS.register(AutoCompression.class);
 		MinecraftForge.EVENT_BUS.register(GiveItems.class);
 		MinecraftForge.EVENT_BUS.register(BreakCompressedBlock.class);
+		MinecraftForge.EVENT_BUS.register(UpdateChunkLight.class);
 
 	}
 

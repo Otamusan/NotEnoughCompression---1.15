@@ -23,7 +23,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
 import otamusan.nec.block.BlockCompressed;
-import otamusan.nec.block.IBlockCompressed;
 import otamusan.nec.client.blockcompressed.CompressedData;
 import otamusan.nec.common.Lib;
 import otamusan.nec.config.ConfigCommon;
@@ -99,8 +98,10 @@ public class CompressedChunkGenerator extends Feature<NoFeatureConfig> {
 
 		CompressedData data = new CompressedData(state, compressed);
 
-		boolean isSuccess = IBlockCompressed.setCompressedBlock(pos, worldIn, data, true);
-		IBlockCompressed.lightCheck(worldIn, pos);
+		boolean isSuccess = BlockCompressed.setCompressedBlock(pos, worldIn, data, true);
+		/*BlockCompressed.lightCheck(worldIn, pos);
+		NECPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(),
+				new MessageUpdateLight(pos));*/
 
 		if (!isSuccess) {
 			worldIn.setBlockState(pos, state, 11);

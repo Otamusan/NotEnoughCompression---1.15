@@ -10,7 +10,7 @@ public class UseContextWrapper extends ItemUseContext {
 
 	public UseContextWrapper(ItemUseContext original, ItemStack stack) {
 		super(original.getPlayer(), original.getHand(), new BlockRayTraceResult(original.getHitVec(),
-				original.getFace(), original.getPos(), original.func_221533_k()));
+				original.getFace(), original.getPos(), original.isInside()));
 		this.originalContext = original;
 		this.stack = stack;
 	}

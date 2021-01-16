@@ -23,6 +23,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import otamusan.nec.block.tileentity.compressedfurnace.TileCompressedFurnace;
+import otamusan.nec.config.ConfigCommon;
 
 //FurnaceBlock
 public class BlockCompressedFurnace extends BlockCompressed {
@@ -37,7 +38,7 @@ public class BlockCompressedFurnace extends BlockCompressed {
 
 	@Override
 	public boolean isAvailable(Block item) {
-		return item == Blocks.FURNACE;
+		return item == Blocks.FURNACE && ConfigCommon.vspecializeCompressedFurnace;
 	}
 
 	@Override

@@ -34,6 +34,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 import otamusan.nec.client.itemcompressed.CompressedTEISR;
+import otamusan.nec.config.ConfigCommon;
 
 public class ItemCompressedSword extends SwordItem implements IItemCompressed {
 
@@ -177,7 +178,7 @@ public class ItemCompressedSword extends SwordItem implements IItemCompressed {
 
 	@Override
 	public boolean isAvailable(Item item) {
-		return item instanceof SwordItem;
+		return (item instanceof SwordItem) && ConfigCommon.vspecializeCompressedSword;
 	}
 
 	@Override
@@ -224,29 +225,12 @@ public class ItemCompressedSword extends SwordItem implements IItemCompressed {
 
 	@Override
 	public ITextComponent getDisplayName(ItemStack stack) {
-		if (ItemCompressed.isSpecialized((IItemCompressed) stack.getItem()))
-			return new TranslationTextComponent("notenoughcompression.compressed", ItemCompressed.getTime(stack),
-					ItemCompressed.getOriginal(stack).getDisplayName()).applyTextStyles(TextFormatting.BOLD,
-							TextFormatting.AQUA);
-		return new TranslationTextComponent("notenoughcompression.compressed", ItemCompressed.getTime(stack),
-				ItemCompressed.getOriginal(stack).getDisplayName());
+		return ItemCompressed.getCompressedDisplayName(stack);
 	}
 
 	@Override
 	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-		//tooltip.add(getOriginal(stack).getDisplayName());
-		//tooltip.add(new StringTextComponent(getTime(stack) + " time"));
-		if (ItemCompressed.isSpecialized((IItemCompressed) stack.getItem())) {
-			TextFormatting formatting = TextFormatting.GOLD;
-			tooltip.add(new TranslationTextComponent("notenoughcompression.specialized").applyTextStyle(formatting));
-			tooltip.add(new TranslationTextComponent("notenoughcompression.itemtypedescription." + getCompressedName())
-					.applyTextStyle(formatting));
-		}
-
-		tooltip.add(new TranslationTextComponent("notenoughcompression.total",
-				(long) Math.pow(8, ItemCompressed.getTime(stack))));
-		tooltip.add(new TranslationTextComponent("notenoughcompression.compresseditem",
-				ItemCompressed.getOriginal(stack).getDisplayName()));
+		ItemCompressed.addCompressedInformation(stack, worldIn, tooltip, flagIn);
 	}
 
 }

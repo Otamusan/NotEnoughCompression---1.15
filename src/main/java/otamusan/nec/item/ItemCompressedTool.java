@@ -25,7 +25,7 @@ import otamusan.nec.config.ConfigCommon;
 public class ItemCompressedTool extends ItemCompressed {
 	@Override
 	public boolean isAvailable(Item item) {
-		return !item.getToolTypes(new ItemStack(item)).isEmpty();
+		return !item.getToolTypes(new ItemStack(item)).isEmpty() && ConfigCommon.vspecializeCompressedTool;
 	}
 
 	@Override
@@ -38,15 +38,18 @@ public class ItemCompressedTool extends ItemCompressed {
 	}
 
 	public static float getAttackModi(ItemStack stack) {
-		return (float) Math.pow(ConfigCommon.CONFIG_COMMON.modifierofAttackDamage.get(), getTime(stack));
+		if(ConfigCommon.vmodifierofAttackDamage == null) return 0;
+		return (float) Math.pow(ConfigCommon.vmodifierofAttackDamage, getTime(stack));
 	}
 
 	public static float getSpeedModi(ItemStack stack) {
-		return (float) Math.pow(ConfigCommon.CONFIG_COMMON.modifierofMiningSpeed.get(), getTime(stack));
+		if(ConfigCommon.vmodifierofMiningSpeed == null) return 0;
+		return (float) Math.pow(ConfigCommon.vmodifierofMiningSpeed, getTime(stack));
 	}
 
 	public static float getDurabilityModi(ItemStack stack) {
-		return (float) Math.pow(ConfigCommon.CONFIG_COMMON.modifierofMaxDurability.get(), getTime(stack));
+		if(ConfigCommon.vmodifierofMaxDurability == null) return 0;
+		return (float) Math.pow(ConfigCommon.vmodifierofMaxDurability, getTime(stack));
 	}
 
 	@Override

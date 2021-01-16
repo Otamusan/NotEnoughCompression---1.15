@@ -23,7 +23,7 @@ import otamusan.nec.common.Lib;
 @Mod.EventBusSubscriber(modid = Lib.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ConfigCommon {
 
-	static final ForgeConfigSpec SPEC;
+	public static final ForgeConfigSpec SPEC;
 	public static final ConfigCommon CONFIG_COMMON;
 	static {
 		final Pair<ConfigCommon, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(ConfigCommon::new);
@@ -31,31 +31,58 @@ public class ConfigCommon {
 		CONFIG_COMMON = specPair.getLeft();
 	}
 
-	public ForgeConfigSpec.ConfigValue<String> compressionCatalyst;
-	public ForgeConfigSpec.ConfigValue<String> decompressionCatalyst;
-	public ConfigValue<List<? extends String>> incompressibleList;
-	public ForgeConfigSpec.BooleanValue isReplaceVanillaRecipe;
+	private ForgeConfigSpec.ConfigValue<String> compressionCatalyst;
+	private ForgeConfigSpec.ConfigValue<String> decompressionCatalyst;
+	private ConfigValue<List<? extends String>> incompressibleList;
+	private ForgeConfigSpec.BooleanValue isReplaceVanillaRecipe;
 
-	public ForgeConfigSpec.BooleanValue isReplaceChunk;
-	public DoubleValue replaceRate;
-	public IntValue replacedMaxTime;
-	public IntValue deviationofTime;
-	public ConfigValue<List<? extends String>> placeExclusion;
+	private ForgeConfigSpec.BooleanValue isReplaceChunk;
+	private DoubleValue replaceRate;
+	private IntValue maxSize;
+	private IntValue replacedMaxTime;
+	private IntValue deviationofTime;
+	private ConfigValue<List<? extends String>> placeExclusion;
 
-	public BooleanValue specializeCompressedBrewingStand;
-	public BooleanValue specializeCompressedCrops;
-	public BooleanValue slowDownCropsGrowthByTick;
-	public BooleanValue slowDownCropsGrowthByBoneMeal;
-	public BooleanValue specializeCompressedFurnace;
-	public BooleanValue specializeCompressedSapling;
-	public BooleanValue slowDownTreeGrowthByTick;
-	public BooleanValue slowDownTreeGrowthByBoneMeal;
-	public BooleanValue specializeCompressedSword;
-	public BooleanValue specializeCompressedTool;
-	public DoubleValue modifierofAttackDamage;
-	public DoubleValue modifierofMiningSpeed;
-	public DoubleValue modifierofMaxDurability;
+	private BooleanValue specializeCompressedBrewingStand;
+	private BooleanValue specializeCompressedCrops;
+	private BooleanValue slowDownCropsGrowthByTick;
+	private BooleanValue slowDownCropsGrowthByBoneMeal;
+	private BooleanValue specializeCompressedFurnace;
+	private BooleanValue specializeCompressedSapling;
+	private BooleanValue slowDownTreeGrowthByTick;
+	private BooleanValue slowDownTreeGrowthByBoneMeal;
+	private BooleanValue specializeCompressedSword;
+	private BooleanValue specializeCompressedTool;
+	private DoubleValue modifierofAttackDamage;
+	private DoubleValue modifierofMiningSpeed;
+	private DoubleValue modifierofMaxDurability;
 
+
+	public static String vcompressionCatalyst;
+	public static String vdecompressionCatalyst;
+	public static List<? extends String> vincompressibleList;
+	public static Boolean visReplaceVanillaRecipe;
+
+	public static Boolean visReplaceChunk;
+	public static Double vreplaceRate;
+	public static Integer vmaxSize;
+	public static Integer vreplacedMaxTime;
+	public static Integer vdeviationofTime;
+	public static List<? extends String> vplaceExclusion;
+
+	public static Boolean vspecializeCompressedBrewingStand;
+	public static Boolean vspecializeCompressedCrops;
+	public static Boolean vslowDownCropsGrowthByTick;
+	public static Boolean vslowDownCropsGrowthByBoneMeal;
+	public static Boolean vspecializeCompressedFurnace;
+	public static Boolean vspecializeCompressedSapling;
+	public static Boolean vslowDownTreeGrowthByTick;
+	public static Boolean vslowDownTreeGrowthByBoneMeal;
+	public static Boolean vspecializeCompressedSword;
+	public static Boolean vspecializeCompressedTool;
+	public static Double vmodifierofAttackDamage;
+	public static Double vmodifierofMiningSpeed;
+	public static Double vmodifierofMaxDurability;
 	public ConfigCommon(ForgeConfigSpec.Builder builder) {
 		builder.push("Compression");
 		compressionCatalyst = builder.comment("Catalyst item of Compression").define("compressionCatalyst",
@@ -78,7 +105,8 @@ public class ConfigCommon {
 
 		builder.push("World");
 		isReplaceChunk = builder.comment("Whether to replace chunk with compressed one").define("isReplaceChunk", true);
-		replaceRate = builder.comment("Chunk replacement rate").defineInRange("replaceRate", 0.005d, 0, 1);
+		replaceRate = builder.comment("Chunk replacement rate").defineInRange("replaceRate", 0.5d, 0, 1);
+		maxSize = builder.comment("Max radius of Chunk").defineInRange("maxSize", 6, 0, 16);
 		replacedMaxTime = builder.comment("Maximum compressed time of blocks in chunks replaced")
 				.defineInRange("replacedMaxTime", 5, 1, Integer.MAX_VALUE);
 		deviationofTime = builder.comment("Deviation of the replaced compressed time")
@@ -115,35 +143,62 @@ public class ConfigCommon {
 		modifierofMaxDurability = builder.comment("Modifier per compression of max durability")
 				.defineInRange("modifierofMaxDurability", 1.5, 1, Double.MAX_VALUE);
 		builder.pop();
-
 	}
 
-	public Item getCompressionCatalyst() {
-		return Registry.ITEM.getOrDefault(new ResourceLocation(compressionCatalyst.get()));
+	public static void bake(){
+		vcompressionCatalyst=CONFIG_COMMON.compressionCatalyst.get();
+		vdecompressionCatalyst= CONFIG_COMMON.decompressionCatalyst.get();
+		vincompressibleList= CONFIG_COMMON.incompressibleList.get();
+		visReplaceVanillaRecipe=CONFIG_COMMON.isReplaceVanillaRecipe.get();
+
+		visReplaceChunk=CONFIG_COMMON.isReplaceChunk.get();
+		vreplaceRate=CONFIG_COMMON.replaceRate.get();
+		vmaxSize=CONFIG_COMMON.maxSize.get();
+		vreplacedMaxTime=CONFIG_COMMON.replacedMaxTime.get();
+		vdeviationofTime=CONFIG_COMMON.deviationofTime.get();
+		vplaceExclusion=CONFIG_COMMON.placeExclusion.get();
+
+		vspecializeCompressedBrewingStand=CONFIG_COMMON.specializeCompressedBrewingStand.get();
+		vspecializeCompressedCrops=CONFIG_COMMON.specializeCompressedCrops.get();
+		vslowDownCropsGrowthByTick=CONFIG_COMMON.slowDownCropsGrowthByTick.get();
+		vslowDownCropsGrowthByBoneMeal=CONFIG_COMMON.slowDownCropsGrowthByBoneMeal.get();
+		vspecializeCompressedFurnace=CONFIG_COMMON.specializeCompressedFurnace.get();
+		vspecializeCompressedSapling=CONFIG_COMMON.specializeCompressedSapling.get();
+		vslowDownTreeGrowthByTick=CONFIG_COMMON.slowDownTreeGrowthByTick.get();
+		vslowDownTreeGrowthByBoneMeal=CONFIG_COMMON.slowDownTreeGrowthByBoneMeal.get();
+		vspecializeCompressedSword=CONFIG_COMMON.specializeCompressedSword.get();
+		vspecializeCompressedTool=CONFIG_COMMON.specializeCompressedTool.get();
+		vmodifierofAttackDamage=CONFIG_COMMON.modifierofAttackDamage.get();
+		vmodifierofMiningSpeed=CONFIG_COMMON.modifierofMiningSpeed.get();
+		vmodifierofMaxDurability=CONFIG_COMMON.modifierofMaxDurability.get();
 	}
 
-	public boolean isCompressionCatalyst(Item item) {
+	public static Item getCompressionCatalyst() {
+		return Registry.ITEM.getOrDefault(new ResourceLocation(vcompressionCatalyst));
+	}
+
+	public static boolean isCompressionCatalyst(Item item) {
 		return getCompressionCatalyst() == item;
 	}
 
-	public Item getDecompressionCatalyst() {
-		return Registry.ITEM.getOrDefault(new ResourceLocation(decompressionCatalyst.get()));
+	public static Item getDecompressionCatalyst() {
+		return Registry.ITEM.getOrDefault(new ResourceLocation(vdecompressionCatalyst));
 	}
 
-	public boolean isDecompressionCatalyst(Item item) {
+	public static boolean isDecompressionCatalyst(Item item) {
 		return getDecompressionCatalyst() == item;
 	}
 
-	public boolean isCompressable(Item item) {
-		for (String name : incompressibleList.get()) {
+	public static boolean isCompressable(Item item) {
+		for (String name : vincompressibleList) {
 			if (Registry.ITEM.getOrDefault(new ResourceLocation(name)) == item)
 				return false;
 		}
 		return true;
 	}
 
-	public boolean canPlace(Block block) {
-		for (String name : placeExclusion.get()) {
+	public static boolean canPlace(Block block) {
+		for (String name : vplaceExclusion) {
 			if (Registry.BLOCK.getOrDefault(new ResourceLocation(name)) == block)
 				return false;
 		}
@@ -160,11 +215,14 @@ public class ConfigCommon {
 
 	@SubscribeEvent
 	public static void onModConfigEvent(final ModConfig.ModConfigEvent event) {
-
+		if (event.getConfig().getSpec() == ConfigCommon.SPEC) {
+			bake();
+		}
 	}
 
 	@SubscribeEvent
 	public static void onFileChange(final Reloading configEvent) {
+
 	}
 
 }

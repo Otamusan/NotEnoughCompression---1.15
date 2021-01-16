@@ -28,6 +28,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import otamusan.nec.item.ItemCompressed;
 import otamusan.nec.lib.ColorUtil;
+import otamusan.nec.minterface.ItemRendererInterface;
 
 //render all compressed items including non-block items
 @OnlyIn(Dist.CLIENT)
@@ -39,21 +40,10 @@ public class CompressedTEISR extends ItemStackTileEntityRenderer {
 		IBakedModel model = Minecraft.getInstance().getItemRenderer()
 				.getItemModelWithOverrides(ItemCompressed.getOriginal(stack), null, null);
 		matrix.translate(0.5D, 0.5D, 0.5D);
-		renderItem(stack, geTransformType(), false, matrix, type, p_228364_4_, p_228364_5_, model);
-	}
-
-	public TransformType geTransformType() {
-		StackTraceElement[] ste = new Throwable().getStackTrace();
-		if (ste[3].getMethodName() == "renderItemModelIntoGUI")
-			return TransformType.GUI;
-
-		if (ste[5].getMethodName() == "renderEntityStatic")
-			return TransformType.GROUND;
-
-		if (ste[4].getMethodName() == "renderItemSide")
-			return TransformType.FIRST_PERSON_LEFT_HAND;
-
-		return TransformType.GUI;
+		if(!(Minecraft.getInstance().getItemRenderer() instanceof ItemRendererInterface)) return;
+		TransformType transformType = ((ItemRendererInterface)Minecraft.getInstance().getItemRenderer()).getType();
+		if(transformType == null) return;
+		renderItem(stack, transformType, false, matrix, type, p_228364_4_, p_228364_5_, model);
 	}
 
 	public void renderItem(ItemStack stack, ItemCameraTransforms.TransformType transformType,

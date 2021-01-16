@@ -28,7 +28,8 @@ public class ReplacedShapelessRecipe extends ShapelessRecipe implements ICraftin
 	private final ItemStack recipeOutput;
 	private final NonNullList<Ingredient> recipeItems;
 	private final boolean isSimple;
-
+	private boolean replace = ConfigCommon.visReplaceVanillaRecipe;
+	private ShapelessRecipe original;
 	public ReplacedShapelessRecipe(ResourceLocation idIn, String groupIn, ItemStack recipeOutputIn,
 			NonNullList<Ingredient> recipeItemsIn) {
 		super(idIn, groupIn, recipeOutputIn, recipeItemsIn);
@@ -37,6 +38,7 @@ public class ReplacedShapelessRecipe extends ShapelessRecipe implements ICraftin
 		this.recipeOutput = recipeOutputIn;
 		this.recipeItems = recipeItemsIn;
 		this.isSimple = recipeItemsIn.stream().allMatch(Ingredient::isSimple);
+		this.original = new ShapelessRecipe(idIn,groupIn,recipeOutputIn,recipeItemsIn);
 	}
 
 	public ResourceLocation getId() {
@@ -67,6 +69,7 @@ public class ReplacedShapelessRecipe extends ShapelessRecipe implements ICraftin
 	}
 
 	public boolean matches(CraftingInventory inv, World worldIn) {
+		if(!replace) return original.matches(inv,worldIn);
 		RecipeItemHelper recipeitemhelper = new RecipeItemHelper();
 		java.util.List<ItemStack> inputs = new java.util.ArrayList<>();
 		int i = 0;
@@ -104,6 +107,7 @@ public class ReplacedShapelessRecipe extends ShapelessRecipe implements ICraftin
 	}
 
 	public ItemStack getCraftingResult(CraftingInventory inv) {
+		if(!replace) return original.getCraftingResult(inv);
 		int time = 0;
 		for (int i = 0; i < inv.getSizeInventory(); i++) {
 			time = ItemCompressed.getTime(inv.getStackInSlot(i));
@@ -114,6 +118,7 @@ public class ReplacedShapelessRecipe extends ShapelessRecipe implements ICraftin
 	}
 
 	public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv) {
+		if(!replace) return original.getRemainingItems(inv);
 		NonNullList<ItemStack> nonnulllist = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
 
 		for (int i = 0; i < nonnulllist.size(); ++i) {
@@ -149,10 +154,10 @@ public class ReplacedShapelessRecipe extends ShapelessRecipe implements ICraftin
 						+ (ReplacedShapedRecipe.MAX_WIDTH * ReplacedShapedRecipe.MAX_HEIGHT));
 			} else {
 				ItemStack itemstack = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, "result"));
-				if (ConfigCommon.CONFIG_COMMON.isReplaceVanillaRecipe.get()) {
+				//if (ConfigCommon.visReplaceVanillaRecipe) {
 					return new ReplacedShapelessRecipe(recipeId, s, itemstack, nonnulllist);
-				}
-				return new ShapelessRecipe(recipeId, s, itemstack, nonnulllist);
+				//}
+				//return new ShapelessRecipe(recipeId, s, itemstack, nonnulllist);
 
 			}
 		}
@@ -180,11 +185,11 @@ public class ReplacedShapelessRecipe extends ShapelessRecipe implements ICraftin
 			}
 
 			ItemStack itemstack = buffer.readItemStack();
-			if (ConfigCommon.CONFIG_COMMON.isReplaceVanillaRecipe.get()) {
+			//if (ConfigCommon.visReplaceVanillaRecipe) {
 				return new ReplacedShapelessRecipe(recipeId, s, itemstack, nonnulllist);
-			} else {
-				return new ShapelessRecipe(recipeId, s, itemstack, nonnulllist);
-			}
+			//} else {
+			//	return new ShapelessRecipe(recipeId, s, itemstack, nonnulllist);
+			//}
 			//return new ReplacedShapelessRecipe(recipeId, s, new ItemStack(Blocks.STONE), nonnulllist);
 
 		}

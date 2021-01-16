@@ -69,13 +69,10 @@ public class BlockRegister {
 		BLOCK_COMPRESSEDCROPS = (BlockCompressed) new BlockCompressedCrops(
 				Block.Properties.create(Material.MISCELLANEOUS).tickRandomly().variableOpacity())
 						.setRegistryName(Lib.BLOCK_COMPRESSEDCROPS);
-		if (ConfigCommon.CONFIG_COMMON.specializeCompressedFurnace.get())
+
 			BLOCK_COMPRESSED.addChildren(BLOCK_COMPRESSEDFURNACE);
-		if (ConfigCommon.CONFIG_COMMON.specializeCompressedBrewingStand.get())
 			BLOCK_COMPRESSED.addChildren(BLOCK_COMPRESSEDBREWINGSTAND);
-		if (ConfigCommon.CONFIG_COMMON.specializeCompressedSapling.get())
 			BLOCK_COMPRESSED.addChildren(BLOCK_COMPRESSEDSAPLING);
-		if (ConfigCommon.CONFIG_COMMON.specializeCompressedCrops.get())
 			BLOCK_COMPRESSED.addChildren(BLOCK_COMPRESSEDCROPS);
 
 		blockRegistryEvent.getRegistry().registerAll(BLOCK_COMPRESSED, BLOCK_COMPRESSEDFURNACE,

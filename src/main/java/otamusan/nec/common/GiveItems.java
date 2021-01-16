@@ -99,7 +99,7 @@ public class GiveItems {
 
 	@SubscribeEvent
 	public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-		if (!ConfigCommon.CONFIG_COMMON.isReplaceVanillaRecipe.get())
+		if (!ConfigCommon.visReplaceVanillaRecipe)
 			return;
 
 		event.getPlayer().getCapability(ISFIRST).ifPresent(isfirst -> {

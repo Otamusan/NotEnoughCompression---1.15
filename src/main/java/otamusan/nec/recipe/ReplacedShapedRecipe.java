@@ -54,6 +54,8 @@ public class ReplacedShapedRecipe extends ShapedRecipe
 	private final ItemStack recipeOutput;
 	private final ResourceLocation id;
 	private final String group;
+	private boolean replace= ConfigCommon.visReplaceVanillaRecipe;
+	private ShapedRecipe original;
 
 	public ReplacedShapedRecipe(ResourceLocation idIn, String groupIn, int recipeWidthIn, int recipeHeightIn,
 			NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn) {
@@ -64,6 +66,7 @@ public class ReplacedShapedRecipe extends ShapedRecipe
 		this.recipeHeight = recipeHeightIn;
 		this.recipeItems = recipeItemsIn;
 		this.recipeOutput = recipeOutputIn;
+		this.original = new ShapedRecipe(idIn,groupIn,recipeWidthIn,recipeHeightIn,recipeItemsIn,recipeOutputIn);
 	}
 
 	public ResourceLocation getId() {
@@ -101,7 +104,7 @@ public class ReplacedShapedRecipe extends ShapedRecipe
 	}
 
 	public boolean matches(CraftingInventory inv, World worldIn) {
-
+	if(!replace) return original.matches(inv,worldIn);
 		int time = 0;
 		for (int j = 0; j < inv.getSizeInventory(); j++) {
 			ItemStack stack = inv.getStackInSlot(j);
@@ -161,6 +164,7 @@ public class ReplacedShapedRecipe extends ShapedRecipe
 	}
 
 	public ItemStack getCraftingResult(CraftingInventory inv) {
+		if(!replace) return original.getCraftingResult(inv);
 		int time = 0;
 		for (int i = 0; i < inv.getSizeInventory(); i++) {
 			time = ItemCompressed.getTime(inv.getStackInSlot(i));
@@ -171,8 +175,8 @@ public class ReplacedShapedRecipe extends ShapedRecipe
 	}
 
 	public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv) {
+		if(!replace) return original.getRemainingItems(inv);
 		NonNullList<ItemStack> nonnulllist = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
-
 		for (int i = 0; i < nonnulllist.size(); ++i) {
 			ItemStack compressed = inv.getStackInSlot(i);
 			ItemStack item = ItemCompressed.getOriginal(compressed);
@@ -358,11 +362,11 @@ public class ReplacedShapedRecipe extends ShapedRecipe
 			NonNullList<Ingredient> nonnulllist = ReplacedShapedRecipe.deserializeIngredients(astring, map, i, j);
 			ItemStack itemstack = ReplacedShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, "result"));
 
-			if (ConfigCommon.CONFIG_COMMON.isReplaceVanillaRecipe.get()) {
+			//if (ConfigCommon.visReplaceVanillaRecipe) {
 				return new ReplacedShapedRecipe(recipeId, s, i, j, nonnulllist, itemstack);
-			} else {
-				return new ShapedRecipe(recipeId, s, i, j, nonnulllist, itemstack);
-			}
+			//} else {
+			//	return new ShapedRecipe(recipeId, s, i, j, nonnulllist, itemstack);
+			//}
 		}
 
 		public ShapedRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
@@ -376,11 +380,11 @@ public class ReplacedShapedRecipe extends ShapedRecipe
 			}
 
 			ItemStack itemstack = buffer.readItemStack();
-			if (ConfigCommon.CONFIG_COMMON.isReplaceVanillaRecipe.get()) {
+		//	if (ConfigCommon.visReplaceVanillaRecipe) {
 				return new ReplacedShapedRecipe(recipeId, s, i, j, nonnulllist, itemstack);
-			} else {
-				return new ShapedRecipe(recipeId, s, i, j, nonnulllist, itemstack);
-			}
+		//	} else {
+		//		return new ShapedRecipe(recipeId, s, i, j, nonnulllist, itemstack);
+		//	}
 		}
 
 		public void write(PacketBuffer buffer, ShapedRecipe recipe) {

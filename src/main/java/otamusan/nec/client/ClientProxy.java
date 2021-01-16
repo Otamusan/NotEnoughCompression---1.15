@@ -39,7 +39,6 @@ import otamusan.nec.client.itemcompressed.ModelCompressed;
 import otamusan.nec.common.Lib;
 import otamusan.nec.item.ItemCompressed;
 import otamusan.nec.lib.ColorUtil;
-import otamusan.nec.network.NECPacketHandler;
 import otamusan.nec.register.BlockRegister;
 import otamusan.nec.register.ItemRegister;
 
@@ -106,7 +105,6 @@ public class ClientProxy {
 
 	@SubscribeEvent
 	public static void doClientStuff(final FMLClientSetupEvent event) {
-		NECPacketHandler.registerMessage();
 
 		ModelLoader.addSpecialModel(Lib.ITEM_COMPRESSED_MODEL);
 		ModelLoader.addSpecialModel(Lib.ITEM_BLOCKCOMPRESSED_MODEL);

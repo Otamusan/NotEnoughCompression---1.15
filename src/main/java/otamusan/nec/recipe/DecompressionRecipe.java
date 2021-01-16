@@ -1,14 +1,20 @@
 package otamusan.nec.recipe;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.ICraftingRecipe;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import otamusan.nec.common.Lib;
 import otamusan.nec.config.ConfigCommon;
 import otamusan.nec.item.ItemCompressed;
 import otamusan.nec.register.ItemRegister;
+import otamusan.nec.register.RecipeRegister;
 
 public class DecompressionRecipe extends NECRecipe {
 
@@ -17,7 +23,7 @@ public class DecompressionRecipe extends NECRecipe {
 	}
 
 	public ItemStack getDecompresser() {
-		return new ItemStack(ConfigCommon.CONFIG_COMMON.getDecompressionCatalyst());
+		return new ItemStack(ConfigCommon.getDecompressionCatalyst());
 	}
 
 	public boolean isCompressable(ItemStack stack) {
@@ -26,12 +32,20 @@ public class DecompressionRecipe extends NECRecipe {
 
 	@Override
 	public boolean matches(CraftingInventory inv, World worldIn) {
-		if (getStackedSlotCount(inv) == 1) {
-			return getSlotCount(inv, item -> ItemCompressed.isCompressed(item)) == 1;
-		} else if (getStackedSlotCount(inv) == 2) {
-			return getSlotCount(inv, item -> areItemStacksEqual(item, getDecompresser())) == 1
-					&& getSlotCount(inv, item -> ItemCompressed.isCompressed(item)) == 1;
+		if(ConfigCommon.visReplaceVanillaRecipe && Minecraft.getInstance().world.getRecipeManager().getRecipes().stream().anyMatch((recipe)->{
+			if(!(recipe instanceof ICraftingRecipe)) return false;
+			if(recipe instanceof DecompressionRecipe) return false;
+			ICraftingRecipe craftingRecipe = (ICraftingRecipe) recipe;
+			return craftingRecipe.matches(inv, worldIn);
+		})) {
+			return false;
 		}
+			if (getStackedSlotCount(inv) == 1) {
+				return getSlotCount(inv, item -> ItemCompressed.isCompressed(item)) == 1;
+			} else if (getStackedSlotCount(inv) == 2) {
+				return getSlotCount(inv, item -> areItemStacksEqual(item, getDecompresser())) == 1
+						&& getSlotCount(inv, item -> ItemCompressed.isCompressed(item)) == 1;
+			}
 		return false;
 	}
 
@@ -55,7 +69,7 @@ public class DecompressionRecipe extends NECRecipe {
 
 	@Override
 	public IRecipeSerializer<?> getSerializer() {
-		return null;
+		return RecipeRegister.decompression;
 	}
 
 	@Override
@@ -65,6 +79,7 @@ public class DecompressionRecipe extends NECRecipe {
 		if (slot == -1)
 			return list;
 		ItemStack compresser = inv.getStackInSlot(slot).copy();
+		compresser.setCount(1);
 		list.set(slot, compresser);
 
 		return list;

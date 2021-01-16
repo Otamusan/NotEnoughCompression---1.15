@@ -28,7 +28,7 @@ public class BlockCompressedSapling extends BlockCompressed implements IGrowable
 
 	@Override
 	public boolean isAvailable(Block item) {
-		return item instanceof SaplingBlock;
+		return (item instanceof SaplingBlock) && ConfigCommon.vspecializeCompressedSapling;
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class BlockCompressedSapling extends BlockCompressed implements IGrowable
 		//if (world.getLight(pos.up()) >= 9
 		//		&& rand.nextInt(7) * ItemCompressed.getTotal(BlockCompressed.getOriginalItem(world, pos)) == 0) {
 		if (rand.nextInt((int) (7 * ItemCompressed.getTotal(BlockCompressed.getOriginalItem(world, pos)))) == 0
-				&& ConfigCommon.CONFIG_COMMON.slowDownTreeGrowthByTick.get()) {
+				&& ConfigCommon.vslowDownTreeGrowthByTick) {
 			grow(world, pos, rand);
 		}
 	}
@@ -118,7 +118,7 @@ public class BlockCompressedSapling extends BlockCompressed implements IGrowable
 	}
 
 	public boolean canUseBonemeal(World worldIn, Random rand, BlockPos pos, BlockState state) {
-		if (ConfigCommon.CONFIG_COMMON.slowDownTreeGrowthByBoneMeal.get())
+		if (ConfigCommon.vslowDownTreeGrowthByBoneMeal)
 			return (double) worldIn.rand.nextFloat() < (0.45D
 					/ ItemCompressed.getTotal(BlockCompressed.getOriginalItem(worldIn, pos)));
 		return worldIn.rand.nextFloat() < 0.45D;

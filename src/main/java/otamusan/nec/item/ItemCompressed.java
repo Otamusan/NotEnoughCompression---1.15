@@ -78,25 +78,34 @@ public class ItemCompressed extends Item implements IItemCompressed {
 
 	@Override
 	public ITextComponent getDisplayName(ItemStack stack) {
+		return getCompressedDisplayName(stack);
+	}
+
+	public static ITextComponent getCompressedDisplayName(ItemStack stack) {
 		if (isSpecialized((IItemCompressed) stack.getItem()))
-			return new TranslationTextComponent("notenoughcompression.compressed", getTime(stack),
-					getOriginal(stack).getDisplayName()).applyTextStyles(TextFormatting.BOLD, TextFormatting.AQUA);
+			return new TranslationTextComponent("notenoughcompression.compressed", ItemCompressed.getTime(stack),
+					ItemCompressed.getOriginal(stack).getDisplayName()).applyTextStyles(TextFormatting.BOLD,
+					TextFormatting.AQUA);
 		return new TranslationTextComponent("notenoughcompression.compressed", getTime(stack),
 				getOriginal(stack).getDisplayName());
 	}
 
 	@Override
 	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+		addCompressedInformation(stack, worldIn, tooltip, flagIn);
+	}
+
+	public static void addCompressedInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
 		//tooltip.add(getOriginal(stack).getDisplayName());
 		//tooltip.add(new StringTextComponent(getTime(stack) + " time"));
 		if (isSpecialized((IItemCompressed) stack.getItem())) {
 			TextFormatting formatting = TextFormatting.GOLD;
 			tooltip.add(new TranslationTextComponent("notenoughcompression.specialized").applyTextStyle(formatting));
-			tooltip.add(new TranslationTextComponent("notenoughcompression.itemtypedescription." + getCompressedName())
+			tooltip.add(new TranslationTextComponent("notenoughcompression.itemtypedescription." + ((IItemCompressed) stack.getItem()).getCompressedName())
 					.applyTextStyle(formatting));
 		}
 
-		tooltip.add(new TranslationTextComponent(getCompressedAmount(ItemCompressed.getTime(stack))));
+		tooltip.add(new TranslationTextComponent("notenoughcompression.total", getCompressedAmount(ItemCompressed.getTime(stack))));
 		tooltip.add(new TranslationTextComponent("notenoughcompression.compresseditem",
 				getOriginal(stack).getDisplayName()));
 	}
@@ -144,7 +153,7 @@ public class ItemCompressed extends Item implements IItemCompressed {
 	public static boolean isCompressable(ItemStack stack) {
 		if (stack.isEmpty())
 			return false;
-		if (!ConfigCommon.CONFIG_COMMON.isCompressable(stack.getItem()))
+		if (!ConfigCommon.isCompressable(stack.getItem()))
 			return false;
 		return true;
 	}

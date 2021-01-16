@@ -3,6 +3,7 @@ package otamusan.nec.block;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.netty.handler.codec.EncoderException;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -31,8 +32,6 @@ import otamusan.nec.block.tileentity.ITileCompressed;
 import otamusan.nec.block.tileentity.TileCompressedBlock;
 import otamusan.nec.client.blockcompressed.CompressedData;
 import otamusan.nec.item.ItemCompressed;
-import otamusan.nec.network.MessageUpdateModel;
-import otamusan.nec.network.NECPacketHandler;
 import otamusan.nec.register.BlockRegister;
 
 public class BlockCompressed extends Block implements IBlockCompressed {
@@ -191,7 +190,6 @@ public class BlockCompressed extends Block implements IBlockCompressed {
 				ServerPlayerEntity entityPlayer = (ServerPlayerEntity) player;
 				entityPlayer.connection.sendPacket(new SChangeBlockPacket(world, pos));
 				entityPlayer.connection.sendPacket(((TileEntity) tileCompressed).getUpdatePacket());
-
 			}
 		}
 		try {
@@ -200,9 +198,6 @@ public class BlockCompressed extends Block implements IBlockCompressed {
 					pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
 		} catch (Exception e) {
 		}
-
-		NECPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(),
-				new MessageUpdateModel(pos));
 	}
 
 	public static void lightCheck(IWorld worldIn, BlockPos pos) {

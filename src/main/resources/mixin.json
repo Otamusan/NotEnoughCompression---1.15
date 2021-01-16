@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8.2",
+  "package": "otamusan.nec.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "main.refmap.json",
+  "mixins": [
+    "MixinItemRenderer"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

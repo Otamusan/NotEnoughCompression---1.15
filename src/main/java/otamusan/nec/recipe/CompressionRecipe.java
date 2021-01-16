@@ -6,9 +6,11 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import otamusan.nec.common.Lib;
 import otamusan.nec.config.ConfigCommon;
 import otamusan.nec.item.ItemCompressed;
 import otamusan.nec.register.ItemRegister;
+import otamusan.nec.register.RecipeRegister;
 
 public class CompressionRecipe extends NECRecipe {
 
@@ -17,7 +19,7 @@ public class CompressionRecipe extends NECRecipe {
 	}
 
 	public static ItemStack getCompresser() {
-		return new ItemStack(ConfigCommon.CONFIG_COMMON.getCompressionCatalyst());
+		return new ItemStack(ConfigCommon.getCompressionCatalyst());
 	}
 
 	public boolean isCompressable(ItemStack stack) {
@@ -54,13 +56,15 @@ public class CompressionRecipe extends NECRecipe {
 
 	@Override
 	public IRecipeSerializer<?> getSerializer() {
-		return null;
+		return RecipeRegister.compression;
 	}
 
 	@Override
 	public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv) {
 		NonNullList<ItemStack> list = NonNullList.withSize(9, ItemStack.EMPTY);
-		list.set(4, getStack(inv, item -> areItemStacksEqual(item, getCompresser())).copy());
+		ItemStack a = getStack(inv, item -> areItemStacksEqual(item, getCompresser())).copy();
+		a.setCount(1);
+		list.set(4, a);
 		return list;
 	}
 

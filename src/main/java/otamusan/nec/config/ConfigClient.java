@@ -21,6 +21,10 @@ public class ConfigClient {
 	public ConfigClient(ForgeConfigSpec.Builder builder) {
 	}
 
+	public static void bake(){
+
+	}
+
 	public ForgeConfigSpec getSpec() {
 		return SPEC;
 	}
@@ -35,6 +39,8 @@ public class ConfigClient {
 
 	@SubscribeEvent
 	public static void onModConfigEvent(final ModConfig.ModConfigEvent event) {
-
+		if (event.getConfig().getSpec() == ConfigCommon.SPEC) {
+			bake();
+		}
 	}
 }

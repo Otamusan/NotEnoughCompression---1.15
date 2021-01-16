@@ -38,10 +38,9 @@ public class ItemRegister {
 		itemRegistryEvent.getRegistry().registerAll(
 				ITEM_COMPRESSED, ITEM_BLOCKCOMPRESSED, ITEM_COMPRESSEDTOOL, ITEM_COMPRESSEDSWORD, ITEM_FLUIDUNIT);
 		ITEM_COMPRESSED.addChildren(ITEM_BLOCKCOMPRESSED);
-		if (ConfigCommon.CONFIG_COMMON.specializeCompressedTool.get())
-			ITEM_COMPRESSED.addChildren(ITEM_COMPRESSEDTOOL);
-		if (ConfigCommon.CONFIG_COMMON.specializeCompressedSword.get())
-			ITEM_COMPRESSED.addChildren(ITEM_COMPRESSEDSWORD);
+
+		ITEM_COMPRESSED.addChildren(ITEM_COMPRESSEDTOOL);
+		ITEM_COMPRESSED.addChildren(ITEM_COMPRESSEDSWORD);
 
 	}
 }

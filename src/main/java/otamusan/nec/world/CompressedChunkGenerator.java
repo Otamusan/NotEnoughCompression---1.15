@@ -60,29 +60,33 @@ public class CompressedChunkGenerator extends Feature<NoFeatureConfig> {
 		int x = pos.getX();
 		int z = pos.getZ();
 
-		if (!ConfigCommon.CONFIG_COMMON.isReplaceChunk.get())
+		if (!ConfigCommon.visReplaceChunk)
 			return false;
 
-		if (rand.nextDouble() > ConfigCommon.CONFIG_COMMON.replaceRate.get())
-
+		if (rand.nextDouble() > ConfigCommon.vreplaceRate)
 			return false;
 
-		int time = ConfigCommon.CONFIG_COMMON.replacedMaxTime.get() - (int) Math.floor(Math.log(rand.nextInt(
-				(int) Math.pow(ConfigCommon.CONFIG_COMMON.deviationofTime.get(),
-						ConfigCommon.CONFIG_COMMON.replacedMaxTime.get()))
+		int time = ConfigCommon.vreplacedMaxTime - (int) Math.floor(Math.log(rand.nextInt(
+				(int) Math.pow(ConfigCommon.vdeviationofTime,
+						ConfigCommon.vreplacedMaxTime))
 				+ 1)
-				/ Math.log(ConfigCommon.CONFIG_COMMON.deviationofTime.get()));
-		for (int ix = x; ix < x + 16; ix++) {
-			for (int iz = z; iz < z + 16; iz++) {
-				for (int iy = 0; iy <= 255; iy++) {
+				/ Math.log(ConfigCommon.vdeviationofTime));
+
+		int cx=x+rand.nextInt(16);
+		int cz=z+rand.nextInt(16);
+		int cy=rand.nextInt(256);
+		BlockPos cpos = new BlockPos(cx,cy,cz);
+		int r = Math.round(ConfigCommon.vmaxSize/2+(ConfigCommon.vmaxSize/2*rand.nextFloat()));
+		for (int ix = cx-r; ix < cx+r+1; ix++) {
+			for (int iz = cz-r; iz < cz+r+1; iz++) {
+				for (int iy = cy-r; iy < cy+r+1; iy++) {
 					BlockPos pos2 = new BlockPos(ix, iy, iz);
 
+					if(!cpos.withinDistance(pos2,r)) continue;
 					if (isReplaceable(pos2, worldIn)) {
-
 						replace(pos2, worldIn, time);
 						//worldIn.setBlockState(pos2, Blocks.STONE.getDefaultState(), 2);
 					}
-
 				}
 			}
 		}
@@ -99,9 +103,9 @@ public class CompressedChunkGenerator extends Feature<NoFeatureConfig> {
 		CompressedData data = new CompressedData(state, compressed);
 
 		boolean isSuccess = BlockCompressed.setCompressedBlock(pos, worldIn, data, true);
-		/*BlockCompressed.lightCheck(worldIn, pos);
-		NECPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(),
-				new MessageUpdateLight(pos));*/
+		BlockCompressed.lightCheck(worldIn, pos);
+		//NECPacketHandler.INSTANCE.send(PacketDistributor.ALL.noArg(),
+		//		new MessageUpdateLight(pos));*/
 
 		if (!isSuccess) {
 			worldIn.setBlockState(pos, state, 11);
@@ -121,6 +125,6 @@ public class CompressedChunkGenerator extends Feature<NoFeatureConfig> {
 				&& !BlockCompressed.isCompressedBlock(state.getBlock())
 				&& state.getBlock().getBlockHardness(state, worldIn, pos) != -1
 				&& ItemCompressed.isCompressable(item)
-				&& ConfigCommon.CONFIG_COMMON.canPlace(state.getBlock()));
+				&& ConfigCommon.canPlace(state.getBlock()));
 	}
 }

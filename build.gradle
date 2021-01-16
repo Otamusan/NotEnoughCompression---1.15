@@ -1,16 +1,25 @@
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url = 'http://repo.spongepowered.org/maven' }
+
         jcenter()
         mavenCentral()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.spongepowered.mixin'
+
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
+
+mixin {
+    add sourceSets.main, "main.refmap.json"
+}
 
 version = '1.0'
 group = 'otamusn.notenoughcompression'
@@ -19,7 +28,7 @@ archivesBaseName = 'NotEnoughCompression'
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
-    mappings channel: 'snapshot', version: '20200225-1.15.1'
+    mappings channel: 'snapshot', version: '20200514-1.15.1'
 
     runs {
         client {
@@ -69,7 +78,7 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.2-31.1.30'
+    minecraft 'net.minecraftforge:forge:1.15.2-31.2.47'
 }
 
 /*jar {

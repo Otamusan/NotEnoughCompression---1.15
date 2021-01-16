@@ -28,7 +28,7 @@ public class BlockCompressedCrops extends BlockCompressed implements IGrowable, 
 
 	@Override
 	public boolean isAvailable(Block item) {
-		return item instanceof CropsBlock;
+		return (item instanceof CropsBlock) && ConfigCommon.vspecializeCompressedCrops;
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class BlockCompressedCrops extends BlockCompressed implements IGrowable, 
 
 		if (new Random()
 				.nextInt((int) Math.pow(8, ItemCompressed.getTime(BlockCompressed.getOriginalItem(worldIn, pos)))) != 0
-				&& ConfigCommon.CONFIG_COMMON.slowDownCropsGrowthByTick.get())
+				&& ConfigCommon.vslowDownCropsGrowthByTick)
 			return;
 		//if (worldIn.getLightSubtracted(pos, 0) >= 9) {
 		int i = this.getAge(worldIn, pos, state);
@@ -153,7 +153,7 @@ public class BlockCompressedCrops extends BlockCompressed implements IGrowable, 
 	public void grow(World worldIn, BlockPos pos, BlockState state) {
 		if (new Random()
 				.nextInt((int) Math.pow(8, ItemCompressed.getTime(BlockCompressed.getOriginalItem(worldIn, pos)))) != 0
-				&& ConfigCommon.CONFIG_COMMON.slowDownCropsGrowthByBoneMeal.get())
+				&& ConfigCommon.vslowDownCropsGrowthByBoneMeal)
 			return;
 
 		int i = this.getAge(worldIn, pos, state) + this.getBonemealAgeIncrease(worldIn);

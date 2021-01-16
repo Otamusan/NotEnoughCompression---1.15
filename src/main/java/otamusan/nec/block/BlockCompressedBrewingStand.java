@@ -19,6 +19,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import otamusan.nec.block.tileentity.compressedbrewingstand.TileCompressedBrewingStand;
+import otamusan.nec.config.ConfigCommon;
 
 public class BlockCompressedBrewingStand extends BlockCompressed {
 	public BlockCompressedBrewingStand(Properties properties) {
@@ -47,7 +48,7 @@ public class BlockCompressedBrewingStand extends BlockCompressed {
 
 	@Override
 	public boolean isAvailable(Block item) {
-		return item == Blocks.BREWING_STAND;
+		return item == Blocks.BREWING_STAND && ConfigCommon.vspecializeCompressedBrewingStand;
 	}
 
 	@Override

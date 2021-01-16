@@ -4,6 +4,7 @@
 	"notenoughcompression.compresseditem":"圧縮されたアイテム : %s",
 	"notenoughcompression.total":"合計 : %s",
 	"notenoughcompression.specialized":"[特殊]",
+	"notenoughcompression.itemtypedescription.block":"圧縮したまま設置できる",
 	"notenoughcompression.itemtypedescription.tool":"元のツールの強化版",
 	"notenoughcompression.itemtypedescription.sword":"元のツールの強化版",
 	"notenoughcompression.blocktypedescription.brewingstand":"圧縮材料と圧縮燃料を使って醸造ができる",

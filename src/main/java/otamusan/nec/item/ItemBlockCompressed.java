@@ -91,7 +91,7 @@ public class ItemBlockCompressed extends BlockItem implements IItemCompressed {
 									.applyTextStyle(formatting));
 		}
 
-		tooltip.add(new TranslationTextComponent(ItemCompressed.getCompressedAmount(ItemCompressed.getTime(stack))));
+		tooltip.add(new TranslationTextComponent("notenoughcompression.total",ItemCompressed.getCompressedAmount(ItemCompressed.getTime(stack))));
 
 		tooltip.add(new TranslationTextComponent("notenoughcompression.compresseditem",
 				ItemCompressed.getOriginal(stack).getDisplayName()));

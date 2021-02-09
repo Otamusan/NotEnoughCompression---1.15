@@ -65,9 +65,6 @@ public class CompressedFurnaceScreen extends ContainerScreen<CompressedFurnaceCo
 		this.renderHoveredToolTip(p_render_1_, p_render_2_);
 	}
 
-	/**
-	 * Draw the foreground layer for the GuiContainer (everything in front of the items)
-	 */
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		String s = this.title.getFormattedText();
 		this.font.drawString(s, (float) (this.xSize / 2 - this.font.getStringWidth(s) / 2), 6.0F, 4210752);
@@ -75,9 +72,6 @@ public class CompressedFurnaceScreen extends ContainerScreen<CompressedFurnaceCo
 				(float) (this.ySize - 96 + 2), 4210752);
 	}
 
-	/**
-	 * Draws the background layer of this container (behind the items).
-	 */
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		this.minecraft.getTextureManager().bindTexture(this.field_214091_n);
@@ -99,9 +93,6 @@ public class CompressedFurnaceScreen extends ContainerScreen<CompressedFurnaceCo
 				: super.mouseClicked(p_mouseClicked_1_, p_mouseClicked_3_, p_mouseClicked_5_);
 	}
 
-	/**
-	 * Called when the mouse is clicked over a slot or outside the gui.
-	 */
 	protected void handleMouseClick(Slot slotIn, int slotId, int mouseButton, ClickType type) {
 		super.handleMouseClick(slotIn, slotId, mouseButton, type);
 	}

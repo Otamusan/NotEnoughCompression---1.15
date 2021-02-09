@@ -203,34 +203,36 @@ public class TileCompressedFurnace extends TileCompressedBlock
 
 		if (!this.world.isRemote) {
 			ItemStack itemstack = this.items.get(1);
+			ItemStack ingre = this.items.get(0);
+
 			if (this.isBurning() || !itemstack.isEmpty() && !this.items.get(0).isEmpty()) {
 				IRecipe<?> irecipe = this.world.getRecipeManager()
 						.getRecipe((IRecipeType<AbstractCookingRecipe>) this.recipeType,
-								new InvWrapper(this, ItemCompressed.getOriginal(this.items.get(0))), this.world)
+								new InvWrapper(this, ItemCompressed.getOriginal(ingre)), this.world)
 						.orElse(null);
-				if (!this.isBurning() && this.canSmelt(irecipe)) {
+				if (!this.isBurning() && this.canSmelt(irecipe,ingre)) {
 					this.burnTime = this.getBurnTime(itemstack);
 					this.recipesUsed = this.burnTime;
 					if (this.isBurning()) {
 						flag1 = true;
 						if (itemstack.hasContainerItem())
-							this.items.set(1, itemstack.getContainerItem());
+							this.items.set(1, ItemCompressed.createCompressed(itemstack.getContainerItem().copy(),getTime()));
 						else if (!itemstack.isEmpty()) {
 							Item item = itemstack.getItem();
 							itemstack.shrink(1);
 							if (itemstack.isEmpty()) {
-								this.items.set(1, itemstack.getContainerItem());
+								this.items.set(1, ItemCompressed.createCompressed(itemstack.getContainerItem().copy(),getTime()));
 							}
 						}
 					}
 				}
 
-				if (this.isBurning() && this.canSmelt(irecipe)) {
+				if (this.isBurning() && this.canSmelt(irecipe, ingre)) {
 					++this.cookTime;
 					if (this.cookTime == this.cookTimeTotal) {
 						this.cookTime = 0;
 						this.cookTimeTotal = this.func_214005_h();
-						this.smelt(irecipe);
+						this.smelt(irecipe,ingre);
 						flag1 = true;
 					}
 				} else {
@@ -262,10 +264,10 @@ public class TileCompressedFurnace extends TileCompressedBlock
 		return ItemCompressed.getTime(getCompressedData().getStack());
 	}
 
-	protected boolean canSmelt(@Nullable IRecipe<?> recipeIn) {
+	protected boolean canSmelt(@Nullable IRecipe<?> recipeIn, ItemStack stack) {
 		if (!this.items.get(0).isEmpty() && recipeIn != null) {
 			ItemStack reciperesult = ItemCompressed.createCompressed(recipeIn.getRecipeOutput(), getTime());
-			if (reciperesult.isEmpty()) {
+			if (recipeIn.getRecipeOutput().isEmpty() || getTime() != ItemCompressed.getTime(stack)) {
 				return false;
 			} else {
 				ItemStack smelted = this.items.get(2);
@@ -285,8 +287,8 @@ public class TileCompressedFurnace extends TileCompressedBlock
 		}
 	}
 
-	private void smelt(@Nullable IRecipe<?> p_214007_1_) {
-		if (p_214007_1_ != null && this.canSmelt(p_214007_1_)) {
+	private void smelt(@Nullable IRecipe<?> p_214007_1_, ItemStack stack) {
+		if (p_214007_1_ != null && this.canSmelt(p_214007_1_, stack)) {
 			ItemStack material = this.items.get(0);
 			ItemStack recipeResult = ItemCompressed.createCompressed(p_214007_1_.getRecipeOutput(), getTime());
 			ItemStack smelted = this.items.get(2);

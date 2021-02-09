@@ -24,9 +24,6 @@ public class CompressedBrewingStandScreen extends ContainerScreen<CompressedBrew
 		this.renderHoveredToolTip(p_render_1_, p_render_2_);
 	}
 
-	/**
-	* Draw the foreground layer for the GuiContainer (everything in front of the items)
-	*/
 	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
 		this.font.drawString(this.title.getFormattedText(),
 				(float) (this.xSize / 2 - this.font.getStringWidth(this.title.getFormattedText()) / 2), 6.0F, 4210752);
@@ -34,9 +31,6 @@ public class CompressedBrewingStandScreen extends ContainerScreen<CompressedBrew
 				(float) (this.ySize - 96 + 2), 4210752);
 	}
 
-	/**
-	* Draws the background layer of this container (behind the items).
-	*/
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		this.minecraft.getTextureManager().bindTexture(BREWING_STAND_GUI_TEXTURES);

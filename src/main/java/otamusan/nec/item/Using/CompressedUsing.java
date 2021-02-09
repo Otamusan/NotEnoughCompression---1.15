@@ -7,6 +7,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.GlassBottleItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResult;
@@ -24,7 +25,7 @@ public class CompressedUsing {
 		int time = ItemCompressed.getTime(compressed);
 		int count = (int) Math.pow(8, time);
 		Remains remains = new Remains();
-		ActionResultType type = ActionResultType.FAIL;
+		ActionResultType type = ActionResultType.PASS;
 
 		for (int i = 0; i < count; i++) {
 			ItemStack using = original.copy();
@@ -32,8 +33,8 @@ public class CompressedUsing {
 
 			setHeldItem(handIn, using, playerIn);
 			ActionResult<ItemStack> result = using.getItem().onItemRightClick(worldIn, playerIn, handIn);
-			if (result.getType() == ActionResultType.SUCCESS)
-				type = ActionResultType.SUCCESS;
+			if (result.getType() != ActionResultType.PASS)
+				type = result.getType();
 
 			ItemStack remain = result.getResult().copy();
 			remains.addItem(remain);
@@ -62,7 +63,7 @@ public class CompressedUsing {
 		Hand handIn = context.getHand();
 		World worldIn = context.getWorld();
 		Remains remains = new Remains();
-		ActionResultType type = ActionResultType.FAIL;
+		ActionResultType type = ActionResultType.PASS;
 
 		for (int i = 0; i < count; i++) {
 			ItemStack using = original.copy();
@@ -71,9 +72,8 @@ public class CompressedUsing {
 			setHeldItem(handIn, using, playerIn);
 			ItemUseContext replaced = getItemReplaced(context, using);
 			ActionResultType result = using.getItem().onItemUse(replaced);
-			if (result == ActionResultType.SUCCESS)
-				type = ActionResultType.SUCCESS;
-
+			if (result != ActionResultType.PASS)
+				type = result;
 			ItemStack remain = playerIn.getHeldItem(handIn);
 			remains.addItem(remain);
 

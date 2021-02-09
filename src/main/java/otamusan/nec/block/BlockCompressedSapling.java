@@ -39,13 +39,18 @@ public class BlockCompressedSapling extends BlockCompressed implements IGrowable
 	@Override
 	public void tick(BlockState blockState, ServerWorld world, BlockPos pos,
 			Random rand) {
+
 		super.tick(blockState, world, pos, rand);
 		if (!world.isAreaLoaded(pos, 1))
 			return;
+
 		//if (world.getLight(pos.up()) >= 9
 		//		&& rand.nextInt(7) * ItemCompressed.getTotal(BlockCompressed.getOriginalItem(world, pos)) == 0) {
-		if (rand.nextInt((int) (7 * ItemCompressed.getTotal(BlockCompressed.getOriginalItem(world, pos)))) == 0
-				&& ConfigCommon.vslowDownTreeGrowthByTick) {
+		if(!ConfigCommon.vslowDownTreeGrowthByTick && rand.nextInt(7) == 0){
+			grow(world, pos, rand);
+			return;
+		}
+		if (rand.nextInt((int) (7 * ItemCompressed.getTotal(BlockCompressed.getOriginalItem(world, pos)))) == 0) {
 			grow(world, pos, rand);
 		}
 	}

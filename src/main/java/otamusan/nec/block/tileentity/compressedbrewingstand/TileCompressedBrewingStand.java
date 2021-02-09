@@ -75,9 +75,6 @@ public class TileCompressedBrewingStand extends TileCompressedBlock
 		return BlockRegister.TILECOMPRESSEDBREWTINGSTANDETYPE;
 	}
 
-	/**
-	 * Returns the number of slots in the inventory.
-	 */
 	public int getSizeInventory() {
 		return this.brewingItemStacks.size();
 	}
@@ -94,7 +91,7 @@ public class TileCompressedBrewingStand extends TileCompressedBlock
 
 	public void tick() {
 		ItemStack itemstack = this.brewingItemStacks.get(4);
-		if (this.fuel <= 0 && ItemCompressed.getOriginal(itemstack).getItem() == Items.BLAZE_POWDER) {
+		if (this.fuel <= 0 && ItemCompressed.getOriginal(itemstack).getItem() == Items.BLAZE_POWDER && ItemCompressed.getTime(itemstack)==getTime()) {
 			this.fuel = 20;
 			itemstack.shrink(1);
 			this.markDirty();
@@ -143,10 +140,6 @@ public class TileCompressedBrewingStand extends TileCompressedBlock
 
 	}
 
-	/**
-	 * Creates an array of boolean values, each value represents a potion input slot, value is true if the slot is not
-	 * null.
-	 */
 	public boolean[] createFilledSlotsArray() {
 		boolean[] aboolean = new boolean[3];
 
@@ -165,6 +158,7 @@ public class TileCompressedBrewingStand extends TileCompressedBlock
 		brewingItemStacks.forEach(item -> {
 			stacks.add(ItemCompressed.getOriginal(item));
 		});
+		if(!brewingItemStacks.stream().allMatch(stack -> (ItemCompressed.getTime(stack)==getTime()) || stack.isEmpty())) return false;
 		if (!itemstack.isEmpty())
 			return net.minecraftforge.common.brewing.BrewingRecipeRegistry.canBrew(stacks,
 					ItemCompressed.getOriginal(itemstack),
@@ -234,31 +228,19 @@ public class TileCompressedBrewingStand extends TileCompressedBlock
 		return compound;
 	}
 
-	/**
-	 * Returns the stack in the given slot.
-	 */
 	public ItemStack getStackInSlot(int index) {
 		return index >= 0 && index < this.brewingItemStacks.size() ? this.brewingItemStacks.get(index)
 				: ItemStack.EMPTY;
 	}
 
-	/**
-	 * Removes up to a specified number of items from an inventory slot and returns them in a new stack.
-	 */
 	public ItemStack decrStackSize(int index, int count) {
 		return ItemStackHelper.getAndSplit(this.brewingItemStacks, index, count);
 	}
 
-	/**
-	 * Removes a stack from the given slot and returns it.
-	 */
 	public ItemStack removeStackFromSlot(int index) {
 		return ItemStackHelper.getAndRemove(this.brewingItemStacks, index);
 	}
 
-	/**
-	 * Sets the given item stack to the specified slot in the inventory (can be crafting or armor sections).
-	 */
 	public void setInventorySlotContents(int index, ItemStack stack) {
 		if (index >= 0 && index < this.brewingItemStacks.size()) {
 			this.brewingItemStacks.set(index, stack);
@@ -266,9 +248,6 @@ public class TileCompressedBrewingStand extends TileCompressedBlock
 
 	}
 
-	/**
-	 * Don't rename this method to canInteractWith due to conflicts with Container
-	 */
 	public boolean isUsableByPlayer(PlayerEntity player) {
 		if (this.world.getTileEntity(this.pos) != this) {
 			return false;
@@ -282,10 +261,6 @@ public class TileCompressedBrewingStand extends TileCompressedBlock
 		return ItemCompressed.getTime(this.getCompressedData().getStack());
 	}
 
-	/**
-	 * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot. For
-	 * guis use Slot.isItemValid
-	 */
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
 		if (index == 3) {
 			return net.minecraftforge.common.brewing.BrewingRecipeRegistry
@@ -310,16 +285,10 @@ public class TileCompressedBrewingStand extends TileCompressedBlock
 		}
 	}
 
-	/**
-	 * Returns true if automation can insert the given item in the given slot from the given side.
-	 */
 	public boolean canInsertItem(int index, ItemStack itemStackIn, @Nullable Direction direction) {
 		return this.isItemValidForSlot(index, itemStackIn);
 	}
 
-	/**
-	 * Returns true if automation can extract the given item in the given slot from the given side.
-	 */
 	public boolean canExtractItem(int index, ItemStack stack, Direction direction) {
 		if (index == 3) {
 			return stack.getItem() == Items.GLASS_BOTTLE;
@@ -350,9 +319,6 @@ public class TileCompressedBrewingStand extends TileCompressedBlock
 		return super.getCapability(capability, facing);
 	}
 
-	/**
-	 * invalidates a tile entity
-	 */
 	@Override
 	public void remove() {
 		super.remove();

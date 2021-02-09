@@ -5,20 +5,21 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.IRecipeHelperPopulator;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
+import net.minecraft.inventory.container.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.AbstractCookingRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.RecipeItemHelper;
+import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.IntArray;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import otamusan.nec.item.ItemCompressed;
+
+import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
 
 public class CompressedFurnaceContainer extends Container {
 	private final IInventory furnaceInventory;
@@ -31,6 +32,10 @@ public class CompressedFurnaceContainer extends Container {
 		this(containerTypeIn, recipeTypeIn, id, playerInventoryIn, new Inventory(3), new IntArray(4));
 	}
 
+	//public int getTime(){
+	//	return ((TileCompressedFurnace)furnaceInventory).getTime();
+	//}
+
 	public static class CompressedFuelSlot extends Slot {
 
 		private final CompressedFurnaceContainer field_216939_a;
@@ -41,8 +46,10 @@ public class CompressedFurnaceContainer extends Container {
 			this.field_216939_a = p_i50084_1_;
 		}
 
+
 		public boolean isItemValid(ItemStack stack) {
 			return inventory.isItemValidForSlot(getSlotIndex(), stack);
+			//return ((TileCompressedFurnace)inventory).isFuel(stack);
 		}
 
 		public int getItemStackLimit(ItemStack stack) {
@@ -215,7 +222,7 @@ public class CompressedFurnaceContainer extends Container {
 	}
 
 	protected boolean isFuel(ItemStack p_217058_1_) {
-		return furnaceInventory.isItemValidForSlot(1, p_217058_1_);
+		return net.minecraftforge.common.ForgeHooks.getBurnTime(ItemCompressed.getOriginal(p_217058_1_)) > 0;
 	}
 
 	@OnlyIn(Dist.CLIENT)

@@ -116,12 +116,6 @@ public class ItemCompressed extends Item implements IItemCompressed {
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-		if (playerIn.isCreative() && handIn == Hand.OFF_HAND) {
-			ItemStack stack = playerIn.getHeldItem(handIn).copy();
-			worldIn.addEntity(new ItemEntity(worldIn, playerIn.getPositionVec().x, playerIn.getPositionVec().y,
-					playerIn.getPositionVec().z, stack));
-			return new ActionResult<ItemStack>(ActionResultType.SUCCESS, playerIn.getHeldItem(handIn));
-		}
 		return CompressedUsing.onItemRightClick(worldIn, playerIn, handIn);
 	}
 

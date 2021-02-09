@@ -55,17 +55,10 @@ public class CompressedBrewingStandContainer extends Container {
 
 	}
 
-	/**
-	* Determines whether supplied player can use this container
-	*/
 	public boolean canInteractWith(PlayerEntity playerIn) {
 		return this.tileBrewingStand.isUsableByPlayer(playerIn);
 	}
 
-	/**
-	* Handle when the stack in slot {@code index} is shift-clicked. Normally this moves the stack between the player
-	* inventory and the other inventory(s).
-	*/
 	public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
 		ItemStack itemstack = ItemStack.EMPTY;
 		Slot slot = this.inventorySlots.get(index);
@@ -140,25 +133,15 @@ public class CompressedBrewingStandContainer extends Container {
 			super(iInventoryIn, index, xPosition, yPosition);
 		}
 
-		/**
-		 * Check if the stack is allowed to be placed in this slot, used for armor slots as well as furnace fuel.
-		 */
 		public boolean isItemValid(ItemStack stack) {
 			return isValidBrewingFuel(stack);
 		}
 
-		/**
-		 * Returns true if the given ItemStack is usable as a fuel in the brewing stand.
-		 */
 		public static boolean isValidBrewingFuel(ItemStack itemStackIn) {
 			return ItemCompressed.getOriginal(itemStackIn).getItem() == Items.BLAZE_POWDER;
 			//return inventory.isItemValidForSlot(4, itemStackIn);
 		}
 
-		/**
-		 * Returns the maximum stack size for a given slot (usually the same as getInventoryStackLimit(), but 1 in the
-		 * case of armor slots)
-		 */
 		public int getSlotStackLimit() {
 			return 64;
 		}
@@ -169,19 +152,12 @@ public class CompressedBrewingStandContainer extends Container {
 			super(iInventoryIn, index, xPosition, yPosition);
 		}
 
-		/**
-		 * Check if the stack is allowed to be placed in this slot, used for armor slots as well as furnace fuel.
-		 */
 		public boolean isItemValid(ItemStack stack) {
 			//return inventory.isItemValidForSlot(3, stack);
 			return net.minecraftforge.common.brewing.BrewingRecipeRegistry
 					.isValidIngredient(ItemCompressed.getOriginal(stack));
 		}
 
-		/**
-		 * Returns the maximum stack size for a given slot (usually the same as getInventoryStackLimit(), but 1 in the
-		 * case of armor slots)
-		 */
 		public int getSlotStackLimit() {
 			return 64;
 		}
@@ -192,17 +168,10 @@ public class CompressedBrewingStandContainer extends Container {
 			super(p_i47598_1_, p_i47598_2_, p_i47598_3_, p_i47598_4_);
 		}
 
-		/**
-		 * Check if the stack is allowed to be placed in this slot, used for armor slots as well as furnace fuel.
-		 */
 		public boolean isItemValid(ItemStack stack) {
 			return canHoldPotion(stack);
 		}
 
-		/**
-		 * Returns the maximum stack size for a given slot (usually the same as getInventoryStackLimit(), but 1 in the
-		 * case of armor slots)
-		 */
 		public int getSlotStackLimit() {
 			return 1;
 		}
@@ -218,9 +187,6 @@ public class CompressedBrewingStandContainer extends Container {
 			return stack;
 		}
 
-		/**
-		 * Returns true if this itemstack can be filled with a potion
-		 */
 		public static boolean canHoldPotion(ItemStack stack) {
 			return net.minecraftforge.common.brewing.BrewingRecipeRegistry
 					.isValidInput(ItemCompressed.getOriginal(stack));
